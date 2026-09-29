@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JEE 2027 Syllabus Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--card:#fff;--ink:#14213d;--mute:#5d6b85;--line:#d9dfea;--acc:#2447f5;--acc2:#ffb703;--ok:#12a36a;--mid:#f0a202;--low:#e5484d;--dot:#c3cbdb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1220;--card:#151c30;--ink:#e8ecf7;--mute:#8e9bb8;--line:#263050;--acc:#6f8bff;--acc2:#ffc933;--ok:#2fd18f;--mid:#ffb703;--low:#ff6b70;--dot:#3a4670}}
+:root[data-theme="dark"]{--bg:#0d1220;--card:#151c30;--ink:#e8ecf7;--mute:#8e9bb8;--line:#263050;--acc:#6f8bff;--acc2:#ffc933;--ok:#2fd18f;--mid:#ffb703;--low:#ff6b70;--dot:#3a4670}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 "DM Sans",system-ui,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 64px}
+h1{font:800 clamp(28px,5vw,44px)/1.05 "Bricolage Grotesque",sans-serif;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--mute);margin:0 0 20px}
+.top{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between}
+.total{min-width:220px;flex:1;max-width:340px}
+.total b{font:800 34px "Bricolage Grotesque",sans-serif}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:9px;transition:width .3s}
+.tabs{display:flex;gap:8px;margin:18px 0 12px;flex-wrap:wrap}
+.tab{flex:1;min-width:120px;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;font:inherit}
+.tab[aria-selected=true]{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)}
+.tab strong{display:block;font:800 17px "Bricolage Grotesque",sans-serif}
+.tab span{color:var(--mute);font-size:13px}
+.note{background:color-mix(in srgb,var(--acc2) 22%,var(--card));border-left:4px solid var(--acc2);padding:10px 14px;border-radius:8px;margin:0 0 14px;font-size:14px}
+.tools{display:flex;gap:8px;justify-content:flex-end;margin-bottom:10px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.btn:focus-visible,.tab:focus-visible,.cb:focus-visible,.dot:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:780px}
+th{font-size:12px;font-weight:700;color:var(--mute);text-align:center;padding:10px 6px;border-bottom:2px solid var(--line);line-height:1.2}
+th small{display:block;font-weight:400}
+th.l,td.l{text-align:left}
+td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center}
+tr.done td.l .nm{color:var(--mute);text-decoration:line-through}
+.grp td{background:color-mix(in srgb,var(--acc) 9%,var(--card));text-align:left;font:800 14px "Bricolage Grotesque",sans-serif;padding:8px 12px}
+.grp em{font:400 12px "DM Sans";color:var(--mute);font-style:normal;float:right}
+.nm{font-weight:500}
+.cb{appearance:none;width:22px;height:22px;border:2px solid var(--dot);border-radius:6px;background:transparent;cursor:pointer;vertical-align:middle;margin:0}
+.cb:checked{background:var(--ok);border-color:var(--ok);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:100%}
+.dots{display:inline-flex;gap:4px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--dot);background:transparent;padding:0;cursor:pointer}
+.dot.on{background:var(--acc);border-color:var(--acc)}
+.dots.conf .dot.on.c1{background:var(--low);border-color:var(--low)}
+.dots.conf .dot.on.c2{background:var(--mid);border-color:var(--mid)}
+.dots.conf .dot.on.c3{background:var(--ok);border-color:var(--ok)}
+.foot{color:var(--mute);font-size:13px;margin-top:14px}
+@media (max-width:640px){.tab{min-width:0;padding:8px 10px}.tab span{font-size:12px}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+html{scroll-behavior:auto}
+.track{height:220vh;position:relative}
+.hero{position:sticky;top:0;height:100vh;overflow:hidden;background:#4f4478}
+.scene{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 65%;will-change:transform}
+.ly{will-change:transform}
+.veil{position:absolute;inset:0;background:#170c10;opacity:0;pointer-events:none}
+.htxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:0 16px;text-shadow:0 4px 30px rgba(28,12,10,.55),0 1px 3px rgba(0,0,0,.35);will-change:transform,opacity}
+.dn{font:800 clamp(110px,24vw,300px)/.9 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.dl{font:800 clamp(24px,4.4vw,58px)/1.1 "Bricolage Grotesque",sans-serif;margin-top:6px;letter-spacing:.02em}
+.hr{width:clamp(110px,14vw,170px);height:2px;background:#fff;margin:clamp(18px,3vw,34px) 0 clamp(14px,2vw,22px);opacity:.9}
+.hs{font:700 clamp(13px,1.8vw,23px) "DM Sans",sans-serif;letter-spacing:.05em;text-transform:uppercase}
+.cue{position:absolute;bottom:26px;left:0;right:0;text-align:center;color:#fff;font-size:14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cue:after{content:"";display:block;width:2px;height:34px;background:#fff;margin:10px auto 0;opacity:.8}
+.panel{position:relative;z-index:2;background:var(--bg);border-radius:28px 28px 0 0;margin-top:-28px;box-shadow:0 -24px 60px rgba(8,14,32,.35)}
+.panel .wrap{padding-top:44px}
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.track{height:100vh}}
+.savebar{position:sticky;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;padding:10px 10px 10px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(8,14,32,.2);font-size:14px;color:var(--mute)}
+.savebar.dirty{border-color:var(--mid);color:var(--ink)}
+.sv{background:#12a36a;color:#fff;border:0;border-radius:10px;padding:11px 24px;font:700 15px "DM Sans",sans-serif;cursor:pointer;min-width:150px}
+.sv:disabled{opacity:.45;cursor:default}
+.sv:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+.nav{display:flex;gap:6px;overflow-x:auto;margin:0 0 16px;padding-bottom:4px}
+.nav button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px;font:600 14px "DM Sans",sans-serif;cursor:pointer}
+.nav button[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.nav button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font:800 17px "Bricolage Grotesque",sans-serif}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:start}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.st b{display:block;font:800 26px "Bricolage Grotesque",sans-serif}.st span{color:var(--mute);font-size:13px}
+.mu{color:var(--mute);font-size:13px;margin:6px 0}
+.in{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 10px;font:inherit;min-width:0}
+.btn.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn[aria-pressed=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+.modes,.frm{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.ring{position:relative;width:180px;height:180px;margin:6px auto}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 36px "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums}
+.big{font:800 32px "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums;margin-bottom:6px}
+.hm{display:grid;grid-template-rows:repeat(7,14px);grid-auto-flow:column;grid-auto-columns:14px;gap:3px;overflow-x:auto;padding-bottom:6px}
+.hm i{border-radius:3px;background:var(--line)}
+.hm .l1{background:color-mix(in srgb,var(--ok) 30%,var(--line))}.hm .l2{background:color-mix(in srgb,var(--ok) 55%,var(--line))}.hm .l3{background:color-mix(in srgb,var(--ok) 80%,var(--line))}.hm .l4{background:var(--ok)}
+.hb{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.p7{display:inline-flex;gap:3px}.p7 i{width:10px;height:10px;border-radius:50%;background:var(--line)}.p7 i.on{background:var(--ok)}
+
+:root{--cork:#d9b98a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cork:#5b4630}}
+:root[data-theme="dark"]{--cork:#5b4630}
+.panel{background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.2px);background-size:24px 24px}
+.qt{margin:-8px 0 16px;font-style:italic;color:var(--acc);font-weight:500}
+.st,.tab{transition:transform .2s,box-shadow .2s}.st:hover,.tab:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,33,61,.14)}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:30px 22px;padding:32px 22px;border-radius:16px;background-color:var(--cork);background-image:radial-gradient(rgba(0,0,0,.16) 1px,transparent 1.5px);background-size:14px 14px;box-shadow:inset 0 0 0 6px color-mix(in srgb,var(--cork) 60%,#3b2a18),inset 0 4px 20px rgba(0,0,0,.25)}
+.sn{position:relative;background:var(--c);color:#2a2233;padding:36px 14px 10px;min-height:210px;border-radius:3px 3px 16px 3px;box-shadow:0 10px 16px rgba(0,0,0,.3);transform:rotate(var(--r));transition:transform .25s;display:flex;flex-direction:column}
+.sn:hover,.sn:focus-within{transform:rotate(0) scale(1.04);z-index:2}
+.sn:before{content:"📌";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:24px}
+.sn .em{position:absolute;top:8px;left:12px;font-size:22px}
+.sn .x{position:absolute;top:6px;right:6px;border:0;background:rgba(0,0,0,.09);border-radius:50%;width:24px;height:24px;cursor:pointer;color:#2a2233}
+.sn textarea{flex:1;width:100%;background:transparent;border:0;resize:none;outline:0;color:#2a2233;font:600 22px/1.25 "Caveat","DM Sans",cursive}
+.pick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.pick.sm{margin-top:6px;opacity:0;transition:opacity .2s}.sn:hover .pick.sm,.sn:focus-within .pick.sm{opacity:1}
+@media (hover:none){.pick.sm{opacity:1}}
+.ch{border:2px solid transparent;background:var(--bg);border-radius:8px;font-size:20px;cursor:pointer;padding:2px 6px}.ch.on{border-color:var(--acc)}
+.sw{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,0,0,.18);cursor:pointer;padding:0}.sw.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--card)}
+@media (prefers-reduced-motion:reduce){.sn{transition:none}}
+
+/* --- section identity --- */
+.sechead{margin:0 0 16px}
+.sechead h2{font:800 clamp(22px,3.6vw,30px)/1.15 "Bricolage Grotesque",sans-serif;margin:0 0 4px;letter-spacing:-.01em}
+.sechead p{color:var(--mute);margin:0;font-size:14px}
+
+/* sticky notes wall: uneven heights + torn-paper feel so it reads like a real board */
+.wall .sn:nth-child(5n+2){min-height:250px}
+.wall .sn:nth-child(5n+3){min-height:180px}
+.wall .sn:nth-child(5n+4){min-height:225px}
+.sn{background-image:linear-gradient(rgba(255,255,255,.18),transparent 40%)}
+.notecount{color:var(--mute);font-size:13px;margin:-4px 0 14px}
+/* to-do checklist */
+.tdc{padding:12px 14px}
+.tdh{display:flex;align-items:center;gap:8px;position:relative;flex-wrap:wrap}
+.tdh h3{margin:0;flex:none}
+.tnote{flex:1;min-width:160px;background:transparent;color:var(--ink);border:1px dashed var(--line);border-radius:8px;padding:5px 10px;font:800 20px/1.2 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.01em}
+.tnote::placeholder{color:var(--mute);font:500 13px "DM Sans",system-ui,sans-serif;letter-spacing:0}
+.tnote:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.tdh h3 small{display:block;font:400 12px "DM Sans",sans-serif;color:var(--mute);margin-top:1px}
+.tdrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.tdrow:last-child{border-bottom:0}
+.tdrow .cb{flex:none}
+.tdt{flex:1;min-width:0;overflow-wrap:anywhere}
+.tdrow.fin .tdt{color:var(--mute);text-decoration:line-through}
+.chip{font-size:11px;font-weight:700;padding:0 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.tdx{border:0;background:transparent;color:var(--mute);cursor:pointer;padding:2px 6px;border-radius:6px;font:inherit}
+.tdx:hover{color:var(--low)}
+.tdcal{position:absolute;z-index:6;right:0;top:100%;margin-top:6px;width:min(290px,86vw);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 12px 30px rgba(8,14,32,.25)}
+.mch{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.mch b{flex:1;text-align:center;font-size:14px}
+.mc{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.md{position:relative;border:0;background:transparent;color:var(--ink);border-radius:8px;height:34px;font:inherit;font-size:13px;cursor:pointer;padding:0}
+.md.blank{visibility:hidden;pointer-events:none}
+.md.today{outline:2px solid var(--acc);outline-offset:-2px}
+.md.sel{background:var(--acc);color:#fff}
+.md i{position:absolute;bottom:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%}
+.md:focus-visible,.tdx:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+/* calendar */
+.calh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.calh h3{flex:1;margin:0;text-align:center}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cw{text-align:center;font-size:12px;font-weight:700;color:var(--mute);padding:4px 0}
+.cd{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;min-height:66px;padding:6px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;cursor:pointer;font:inherit;text-align:left;min-width:0;overflow:hidden}
+.cd.blank{visibility:hidden;pointer-events:none;border:0}
+.cd.today{border-color:var(--acc)}
+.cd.today>b{color:var(--acc)}
+.cd.sel{background:color-mix(in srgb,var(--acc) 16%,var(--card));box-shadow:0 0 0 2px var(--acc)}
+.cd:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.cd b{font-weight:700;font-size:14px}
+.cdots{display:flex;gap:3px;flex-wrap:wrap}
+.cdots i{width:7px;height:7px;border-radius:50%}
+.ct{font-size:11px;line-height:1.2;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;display:block}
+.evr{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.evr:last-child{border-bottom:0}
+.evr .sq{width:10px;height:10px;border-radius:50%;flex:none}
+@media (max-width:640px){.cd{min-height:46px;padding:4px}.ct{display:none}}
+</style>
+</head>
+<body>
+<section class="track" id="track"><div class="hero">
+<svg class="scene" id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="sky" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="440"><stop offset="0" stop-color="#3f3a75"/><stop offset=".25" stop-color="#a65f86"/><stop offset=".5" stop-color="#f08a6a"/><stop offset=".78" stop-color="#ffc47e"/><stop offset="1" stop-color="#ffe6b8"/></linearGradient>
+<radialGradient id="sun" gradientUnits="userSpaceOnUse" cx="860" cy="270" r="380"><stop offset="0" stop-color="#fff4cf" stop-opacity=".98"/><stop offset=".3" stop-color="#ffc98a" stop-opacity=".55"/><stop offset="1" stop-color="#ff9e6b" stop-opacity="0"/></radialGradient>
+<radialGradient id="ray" gradientUnits="userSpaceOnUse" cx="860" cy="270" r="760"><stop offset="0" stop-color="#fff0c4" stop-opacity=".5"/><stop offset="1" stop-color="#fff0c4" stop-opacity="0"/></radialGradient>
+<linearGradient id="lake" gradientUnits="userSpaceOnUse" x1="0" y1="440" x2="0" y2="900"><stop offset="0" stop-color="#f6b98c"/><stop offset=".25" stop-color="#b89aa0"/><stop offset=".6" stop-color="#4f7482"/><stop offset="1" stop-color="#1d4453"/></linearGradient>
+<linearGradient id="sl" gradientUnits="userSpaceOnUse" x1="0" y1="430" x2="0" y2="900"><stop offset="0" stop-color="#d9b447"/><stop offset=".18" stop-color="#7fa03a"/><stop offset=".55" stop-color="#3f6428"/><stop offset="1" stop-color="#1f3819"/></linearGradient>
+<linearGradient id="dkg" gradientUnits="userSpaceOnUse" x1="0" y1="740" x2="0" y2="900"><stop offset="0" stop-color="#16301f"/><stop offset="1" stop-color="#08140d"/></linearGradient>
+<radialGradient id="dk" gradientUnits="userSpaceOnUse" cx="800" cy="450" r="380"><stop offset="0" stop-color="#1c0e0c" stop-opacity=".4"/><stop offset="1" stop-color="#1c0e0c" stop-opacity="0"/></radialGradient>
+<filter id="bl" x="-30%" y="-40%" width="160%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+<filter id="bl2" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="26"/></filter>
+<filter id="bl4" x="-10%" y="-100%" width="120%" height="300%"><feGaussianBlur stdDeviation="1.6 1"/></filter>
+<filter id="bl3" x="-50%" y="-20%" width="200%" height="140%"><feGaussianBlur stdDeviation="30"/></filter>
+</defs>
+<rect width="1600" height="1200" fill="url(#sky)"/>
+<circle cx="860" cy="270" r="380" fill="url(#sun)"/>
+<g fill="url(#ray)" filter="url(#bl)"><path d="M860 270 L420 -120 L560 -160Z"/><path d="M860 270 L700 -180 L800 -190Z"/><path d="M860 270 L950 -190 L1060 -170Z"/><path d="M860 270 L1180 -130 L1320 -100Z"/><path d="M860 270 L1500 60 L1600 150Z"/><path d="M860 270 L120 90 L0 190Z"/></g>
+<g class="ly" data-s=".02" data-x="240" filter="url(#bl)" fill="#f2a5a6" opacity=".7"><ellipse cx="300" cy="70" rx="330" ry="22"/><ellipse cx="1300" cy="60" rx="360" ry="24"/><ellipse cx="180" cy="150" rx="260" ry="16"/><ellipse cx="1420" cy="150" rx="240" ry="14"/><ellipse cx="740" cy="170" rx="220" ry="18" fill="#ffb27a"/><ellipse cx="1010" cy="200" rx="200" ry="14" fill="#ffc78a"/></g>
+<g class="ly" data-s=".04"><circle cx="860" cy="280" r="27" fill="#fff8de"/><path fill="#b98290" opacity=".95" d="M0 300 L120 250 L230 285 L360 225 L470 290 L600 262 L720 300 L860 292 L1010 300 L1150 256 L1280 296 L1420 240 L1540 280 L1600 268 L1600 520 L0 520Z"/></g>
+<g class="ly" data-s=".06"><path fill="#8e7690" d="M0 350 L150 292 L300 338 L450 272 L620 342 L760 324 L900 348 L1080 302 L1240 352 L1400 292 L1600 346 L1600 540 L0 540Z"/></g>
+<g class="ly" data-s=".08"><path fill="#617a76" d="M0 410 Q200 356 420 400 Q600 436 760 410 Q980 374 1200 414 Q1400 444 1600 400 L1600 620 L0 620Z"/></g>
+<g class="ly" data-s=".1"><rect y="444" width="1600" height="900" fill="url(#lake)"/><ellipse cx="860" cy="620" rx="90" ry="190" fill="#ffd9a0" opacity=".32" filter="url(#bl3)"/><g fill="#fff0c4" opacity=".55" filter="url(#bl4)"><rect x="839" y="450" width="32" height="2" rx="2"/><rect x="833" y="466" width="58" height="2" rx="2"/><rect x="817" y="481" width="89" height="2" rx="2"/><rect x="810" y="490" width="73" height="2" rx="2"/><rect x="815" y="508" width="110" height="2" rx="2"/><rect x="835" y="519" width="97" height="2" rx="2"/><rect x="810" y="537" width="115" height="2" rx="2"/><rect x="817" y="556" width="128" height="2" rx="2"/><rect x="749" y="574" width="170" height="3" rx="2"/><rect x="797" y="597" width="116" height="3" rx="2"/><rect x="774" y="623" width="164" height="3" rx="2"/><rect x="806" y="648" width="131" height="3" rx="2"/><rect x="766" y="680" width="179" height="3" rx="2"/><rect x="744" y="717" width="110" height="4" rx="2"/><rect x="720" y="750" width="253" height="4" rx="2"/><rect x="742" y="792" width="160" height="4" rx="2"/><rect x="693" y="833" width="201" height="5" rx="2"/></g></g>
+<g class="ly" data-s=".09" data-x="-120" filter="url(#bl2)" fill="#ffe6dc" opacity=".72"><ellipse cx="420" cy="446" rx="420" ry="30"/><ellipse cx="1080" cy="452" rx="460" ry="34"/><ellipse cx="760" cy="500" rx="300" ry="26"/></g>
+<g class="ly" data-s=".17"><path fill="url(#sl)" d="M0 470 Q150 440 330 520 Q470 600 520 1200 L0 1200Z"/><path fill="none" stroke="#ffd98a" stroke-width="3" opacity=".55" d="M0 470 Q150 440 330 520 Q470 600 520 900"/><path fill="#1c3a24" opacity=".9" d="M84 491 L89 510 L87 510 L92 524 L89 524 L93 533 L74 533 L79 524 L76 524 L81 510 L78 510ZM71 508 L76 524 L74 524 L78 536 L75 536 L79 543 L63 543 L67 536 L64 536 L68 524 L66 524ZM106 537 L113 559 L110 559 L116 574 L112 574 L117 585 L95 585 L101 574 L97 574 L103 559 L100 559ZM115 480 L120 497 L118 497 L123 509 L120 509 L124 518 L106 518 L111 509 L108 509 L112 497 L110 497ZM51 516 L57 535 L55 535 L60 549 L56 549 L61 558 L42 558 L46 549 L43 549 L48 535 L46 535ZM126 562 L133 585 L130 585 L137 602 L132 602 L138 613 L115 613 L120 602 L116 602 L122 585 L119 585ZM46 448 L51 463 L49 463 L53 474 L50 474 L54 481 L39 481 L42 474 L40 474 L44 463 L42 463ZM34 565 L42 590 L38 590 L45 609 L41 609 L47 621 L21 621 L28 609 L23 609 L30 590 L27 590ZM125 490 L130 508 L128 508 L133 521 L130 521 L134 530 L116 530 L120 521 L117 521 L122 508 L120 508ZM30 505 L35 522 L32 522 L37 534 L34 534 L38 542 L21 542 L25 534 L22 534 L27 522 L25 522ZM130 448 L134 463 L132 463 L136 474 L134 474 L137 482 L122 482 L126 474 L123 474 L127 463 L125 463ZM33 477 L38 492 L36 492 L40 503 L37 503 L41 511 L26 511 L29 503 L27 503 L31 492 L29 492ZM23 456 L27 469 L25 469 L29 480 L26 480 L30 486 L16 486 L19 480 L17 480 L20 469 L19 469ZM27 553 L34 577 L31 577 L38 595 L33 595 L39 607 L15 607 L21 595 L16 595 L23 577 L20 577ZM15 482 L20 497 L18 497 L22 509 L19 509 L23 517 L7 517 L11 509 L8 509 L13 497 L11 497ZM8 553 L16 578 L13 578 L20 596 L15 596 L21 608 L-4 608 L2 596 L-3 596 L4 578 L1 578ZM156 471 L160 485 L158 485 L162 495 L159 495 L163 502 L149 502 L152 495 L149 495 L153 485 L152 485ZM7 507 L13 526 L11 526 L16 539 L12 539 L17 549 L-2 549 L3 539 L-1 539 L4 526 L2 526ZM167 449 L171 462 L169 462 L173 472 L171 472 L174 478 L161 478 L164 472 L161 472 L165 462 L163 462ZM186 517 L193 538 L190 538 L196 554 L192 554 L197 565 L175 565 L180 554 L176 554 L183 538 L180 538ZM203 517 L209 537 L206 537 L212 551 L208 551 L213 561 L193 561 L198 551 L194 551 L200 537 L197 537ZM212 457 L217 474 L215 474 L220 486 L217 486 L221 494 L204 494 L208 486 L205 486 L210 474 L208 474ZM267 577 L275 603 L271 603 L279 622 L274 622 L280 635 L253 635 L260 622 L255 622 L262 603 L259 603ZM282 527 L287 545 L285 545 L290 559 L287 559 L291 567 L273 567 L277 559 L274 559 L279 545 L276 545ZM307 496 L311 511 L309 511 L313 522 L311 522 L314 529 L299 529 L303 522 L300 522 L304 511 L302 511ZM314 509 L320 527 L317 527 L322 540 L319 540 L323 549 L305 549 L310 540 L306 540 L311 527 L309 527ZM340 503 L345 520 L343 520 L347 531 L344 531 L348 539 L332 539 L336 531 L333 531 L337 520 L335 520ZM353 551 L359 571 L357 571 L362 585 L358 585 L363 595 L343 595 L348 585 L344 585 L350 571 L347 571ZM358 593 L365 617 L362 617 L369 635 L364 635 L370 646 L346 646 L352 635 L347 635 L354 617 L351 617ZM372 574 L379 597 L376 597 L382 615 L378 615 L384 626 L360 626 L365 615 L361 615 L368 597 L365 597ZM383 638 L393 671 L389 671 L398 695 L392 695 L400 710 L367 710 L375 695 L369 695 L378 671 L374 671ZM387 614 L394 640 L391 640 L398 658 L393 658 L400 671 L374 671 L380 658 L375 658 L382 640 L379 640ZM408 611 L416 637 L413 637 L420 656 L415 656 L422 669 L395 669 L402 656 L397 656 L404 637 L401 637ZM413 595 L420 618 L417 618 L424 635 L419 635 L425 647 L401 647 L407 635 L403 635 L409 618 L406 618ZM409 643 L417 672 L413 672 L421 692 L416 692 L423 706 L394 706 L401 692 L396 692 L404 672 L400 672ZM417 579 L424 603 L421 603 L428 622 L423 622 L429 634 L404 634 L410 622 L406 622 L413 603 L409 603ZM418 708 L429 744 L424 744 L434 771 L428 771 L437 789 L399 789 L408 771 L402 771 L412 744 L407 744ZM438 677 L447 708 L443 708 L452 731 L446 731 L454 746 L422 746 L429 731 L424 731 L432 708 L428 708ZM436 705 L447 742 L442 742 L452 769 L445 769 L455 787 L417 787 L426 769 L419 769 L429 742 L425 742ZM460 706 L471 743 L466 743 L477 771 L470 771 L479 789 L441 789 L450 771 L443 771 L454 743 L449 743ZM461 799 L475 844 L469 844 L482 877 L473 877 L485 900 L438 900 L450 877 L441 877 L454 844 L448 844ZM461 807 L474 850 L469 850 L481 882 L473 882 L483 902 L439 902 L450 882 L442 882 L454 850 L449 850ZM455 766 L466 804 L461 804 L472 832 L465 832 L474 850 L435 850 L445 832 L438 832 L448 804 L443 804ZM466 756 L478 795 L473 795 L483 823 L476 823 L486 842 L446 842 L456 823 L449 823 L460 795 L455 795Z"/>
+<path fill="url(#sl)" d="M1600 430 Q1420 450 1260 560 Q1150 650 1120 1200 L1600 1200Z"/><path fill="none" stroke="#ffd98a" stroke-width="3" opacity=".55" d="M1600 430 Q1420 450 1260 560 Q1150 650 1120 900"/><path fill="#1c3a24" opacity=".9" d="M1571 461 L1575 477 L1574 477 L1578 488 L1575 488 L1579 495 L1563 495 L1567 488 L1564 488 L1568 477 L1566 477ZM1561 533 L1568 554 L1565 554 L1571 570 L1567 570 L1572 580 L1550 580 L1556 570 L1552 570 L1558 554 L1555 554ZM1546 483 L1552 500 L1549 500 L1554 513 L1551 513 L1555 521 L1537 521 L1542 513 L1539 513 L1543 500 L1541 500ZM1534 424 L1538 436 L1536 436 L1540 444 L1537 444 L1540 450 L1528 450 L1531 444 L1529 444 L1532 436 L1531 436ZM1531 419 L1535 432 L1533 432 L1537 442 L1535 442 L1538 449 L1524 449 L1528 442 L1525 442 L1529 432 L1527 432ZM1531 480 L1536 498 L1534 498 L1539 511 L1536 511 L1540 520 L1522 520 L1526 511 L1523 511 L1528 498 L1525 498ZM1528 464 L1533 480 L1531 480 L1535 491 L1532 491 L1536 499 L1520 499 L1524 491 L1521 491 L1526 480 L1523 480ZM1483 535 L1489 555 L1487 555 L1492 569 L1489 569 L1494 579 L1473 579 L1478 569 L1475 569 L1480 555 L1478 555ZM1465 472 L1469 487 L1468 487 L1472 498 L1469 498 L1473 505 L1457 505 L1461 498 L1458 498 L1462 487 L1460 487ZM1463 502 L1469 521 L1466 521 L1471 535 L1468 535 L1473 545 L1453 545 L1458 535 L1454 535 L1460 521 L1457 521ZM1434 562 L1441 586 L1438 586 L1445 603 L1440 603 L1446 615 L1422 615 L1428 603 L1424 603 L1430 586 L1427 586ZM1435 510 L1441 530 L1438 530 L1444 544 L1440 544 L1445 554 L1425 554 L1430 544 L1426 544 L1432 530 L1429 530ZM1383 520 L1389 541 L1386 541 L1392 556 L1388 556 L1393 566 L1372 566 L1377 556 L1374 556 L1379 541 L1377 541ZM1379 584 L1388 611 L1384 611 L1392 631 L1387 631 L1393 644 L1366 644 L1372 631 L1367 631 L1375 611 L1371 611ZM1372 589 L1379 614 L1376 614 L1383 633 L1378 633 L1385 645 L1359 645 L1365 633 L1361 633 L1368 614 L1364 614ZM1344 593 L1352 621 L1349 621 L1357 642 L1351 642 L1358 656 L1329 656 L1336 642 L1331 642 L1339 621 L1335 621ZM1334 497 L1340 515 L1337 515 L1342 528 L1339 528 L1344 537 L1325 537 L1330 528 L1326 528 L1331 515 L1329 515ZM1333 520 L1339 538 L1336 538 L1341 552 L1338 552 L1343 560 L1324 560 L1329 552 L1325 552 L1330 538 L1328 538ZM1323 581 L1331 609 L1328 609 L1335 630 L1330 630 L1337 643 L1309 643 L1316 630 L1310 630 L1318 609 L1315 609ZM1319 577 L1327 603 L1324 603 L1331 622 L1326 622 L1333 635 L1306 635 L1312 622 L1307 622 L1315 603 L1311 603ZM1320 595 L1329 624 L1325 624 L1333 646 L1328 646 L1335 660 L1305 660 L1312 646 L1307 646 L1315 624 L1311 624ZM1311 616 L1320 644 L1316 644 L1324 664 L1319 664 L1326 678 L1297 678 L1304 664 L1299 664 L1307 644 L1303 644ZM1287 626 L1296 657 L1292 657 L1301 680 L1295 680 L1303 695 L1271 695 L1279 680 L1273 680 L1281 657 L1277 657ZM1286 560 L1294 584 L1290 584 L1297 602 L1293 602 L1299 614 L1274 614 L1280 602 L1276 602 L1282 584 L1279 584ZM1281 539 L1287 560 L1284 560 L1290 576 L1286 576 L1291 586 L1270 586 L1275 576 L1271 576 L1277 560 L1274 560ZM1268 519 L1274 540 L1272 540 L1277 555 L1274 555 L1279 565 L1258 565 L1263 555 L1259 555 L1265 540 L1262 540ZM1259 528 L1265 549 L1262 549 L1268 563 L1264 563 L1269 573 L1248 573 L1254 563 L1250 563 L1255 549 L1253 549ZM1240 618 L1248 644 L1245 644 L1252 663 L1247 663 L1254 676 L1227 676 L1233 663 L1228 663 L1236 644 L1232 644ZM1226 643 L1236 677 L1232 677 L1241 701 L1235 701 L1243 718 L1209 718 L1217 701 L1211 701 L1221 677 L1216 677ZM1234 591 L1241 615 L1238 615 L1245 632 L1240 632 L1246 644 L1222 644 L1228 632 L1223 632 L1230 615 L1227 615ZM1216 609 L1224 635 L1220 635 L1228 654 L1223 654 L1229 667 L1203 667 L1209 654 L1204 654 L1212 635 L1208 635ZM1208 693 L1219 729 L1214 729 L1224 757 L1217 757 L1227 775 L1189 775 L1198 757 L1191 757 L1202 729 L1197 729ZM1211 599 L1220 629 L1216 629 L1224 650 L1219 650 L1226 665 L1196 665 L1203 650 L1198 650 L1206 629 L1202 629ZM1201 680 L1211 712 L1207 712 L1216 735 L1210 735 L1218 751 L1185 751 L1193 735 L1187 735 L1196 712 L1192 712ZM1196 687 L1206 721 L1201 721 L1211 747 L1205 747 L1213 763 L1178 763 L1187 747 L1180 747 L1190 721 L1185 721ZM1198 740 L1209 779 L1204 779 L1215 809 L1208 809 L1218 828 L1177 828 L1187 809 L1180 809 L1191 779 L1186 779ZM1175 660 L1185 695 L1181 695 L1190 720 L1184 720 L1193 737 L1157 737 L1166 720 L1160 720 L1169 695 L1165 695ZM1177 770 L1189 811 L1184 811 L1196 842 L1188 842 L1198 862 L1156 862 L1166 842 L1158 842 L1170 811 L1165 811ZM1163 774 L1176 819 L1170 819 L1183 852 L1174 852 L1185 873 L1140 873 L1151 852 L1143 852 L1155 819 L1149 819ZM1159 737 L1171 777 L1166 777 L1177 805 L1169 805 L1179 825 L1139 825 L1149 805 L1142 805 L1153 777 L1147 777ZM1151 761 L1163 800 L1158 800 L1169 829 L1162 829 L1171 848 L1131 848 L1141 829 L1134 829 L1145 800 L1140 800Z"/></g>
+<g class="ly" data-s=".27"><path fill="url(#dkg)" d="M0 1200 L0 800 Q200 758 420 815 Q640 862 800 832 Q1000 792 1200 832 Q1420 870 1600 805 L1600 1200Z"/></g>
+<rect width="1600" height="900" fill="url(#dk)"/>
+</svg>
+<div class="veil" id="veil"></div>
+<div class="htxt" id="htxt">
+<div class="dn" id="dn" aria-live="polite">0</div>
+<div class="dl" id="dl">DAYS LEFT</div>
+<div class="hr"></div>
+<div class="hs">Till JEE Main — Jan 22, 2027</div>
+</div>
+<div class="cue" id="cue">Scroll to open your tracker</div>
+</div></section>
+<main class="panel"><div class="wrap">
+  <div class="top rv">
+    <div>
+      <h1>JEE 2027 syllabus tracker 🎯</h1>
+      <p class="sub">Dropper plan: every chapter, on its monthly deadline, till 15 Dec.</p>
+      <p class="qt" id="qt"></p>
+    </div>
+    <div class="total"><b id="tp">0%</b> <span class="sub">of Theory, Module, PYQs and Revision done</span><div class="bar"><i id="tb"></i></div></div>
+  </div>
+  <nav class="nav" id="nav" role="tablist"></nav>
+<section id="v-syllabus">
+<div class="tabs rv" role="tablist" id="tabs"></div>
+  <div class="note rv" id="note"></div>
+  <div class="tools rv"><button class="btn" id="reset">Reset this subject</button></div>
+  <div class="scroll rv"><table id="tbl"></table></div>
+  <p class="foot">Progress counts Theory, Module, both PYQ sets and the Revision cycle (3 circles). Formula revision and confidence are for your own tracking. Tap Save progress at the bottom to keep your changes. Unsaved changes are lost when you leave. Saved in this browser.</p>
+</section>
+<section id="v-timers" hidden></section><section id="v-streaks" hidden></section><section id="v-analytics" hidden></section><section id="v-todo" hidden></section><section id="v-calendar" hidden></section><section id="v-notes" hidden></section>
+<div class="savebar" id="sbar"><span id="sst">All changes saved</span><button class="sv" id="sv" disabled>Save progress</button></div>
+</div></main>
+<script>
+const SUBJ=[
+{k:"p",n:"Physics",note:"JEE Main PYQs of 2019–2022 are to be done first, then 2023–2026.",py:["2019-22","2023-26"],
+ m:[["Till July",["Mathematics in Physics","Units and Dimensions","Motion In One Dimension","Motion In Two Dimensions","Laws of Motion","Work Power Energy","COM, Momentum & Collision","Rotational Motion","Atomic Physics"]],
+ ["Till Aug",["Dual Nature of Matter","Nuclear Physics","Kinetic Theory of Gases","Thermal Properties of Matter","Thermodynamics"]],
+ ["Till Sep",["Mechanical Properties of Fluids","Mechanical Properties of Solids","Oscillation","Electrostatics","Gravitation"]],
+ ["Till Oct",["Capacitance","Current Electricity","Magnetic Effects of Current","Magnetic Properties of Matter"]],
+ ["Till Nov",["Alternating Current","Electromagnetic Induction","Wave Optics","Ray Optics"]],
+ ["Till 15 Dec",["Waves and Sound","Semiconductors & EM Waves"]]]},
+{k:"c",n:"Chemistry",note:"PYQ order: do recent years first. The last 5 years in reverse order will serve the purpose.",py:["2026-23","2022-19"],
+ m:[["Till July",["Some Basic Concepts of Chemistry","Structure of Atom","Solutions","Electrochemistry","Chemical Kinetics","Chemical Equilibrium","Ionic Equilibrium"]],
+ ["Till Aug",["Redox Reactions","Thermodynamics (C)","Periodic Table & Properties","Chemical Bonding"]],
+ ["Till Sep",["General Organic Chemistry","Isomerism","Hydrocarbon","Haloalkanes and Haloarenes"]],
+ ["Till Oct",["Alcohols, Phenols and Ethers","Aldehydes, Ketones","Carboxylic Acid Derivatives","Amines"]],
+ ["Till Nov",["Biomolecules","Coordination Compounds","d and f Block Elements","p Block Elements"]],
+ ["Till 15 Dec",["Practical Chemistry [Qualitative Analysis]"]]]},
+{k:"m",n:"Mathematics",note:"PYQ order: do recent years first. 2022 is a challenge, so practise it only for well-prepared chapters.",py:["2026-23","2022-19"],
+ m:[["Till July",["Basic of Mathematics","Quadratic Equation","Sequences and Series","Trigonometric Functions","Trigonometric Equation","Permutations and Combinations","Binomial theorem"]],
+ ["Till Aug",["Straight Lines","Circle","Parabola","Ellipse","Hyperbola"]],
+ ["Till Sep",["Matrices","Determinants","Sets and Relations","Functions","Inverse Trigonometry"]],
+ ["Till Oct",["Limits","Continuity and Differentiability","Application of Derivatives","Indefinite Integration","Definite Integration"]],
+ ["Till Nov",["Area Under Curves","Differential Equations","Vector Algebra","Three-Dimensional Geometry"]],
+ ["Till 15 Dec",["Complex Number","Probability","Statistics"]]]}
+];
+const KEY="jee2027-tracker-v1";
+let S={},cur=0,armed=false;
+try{S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){S={}}
+let dirty=false;
+const save=()=>{dirty=true;syncBar()};
+function syncBar(){const b=document.getElementById("sv"),bar=document.getElementById("sbar");if(!b)return;bar.classList.toggle("dirty",dirty);document.getElementById("sst").textContent=dirty?"You have unsaved changes":"All changes saved";b.disabled=!dirty}
+function commit(){const b=document.getElementById("sv");let ok=true;try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem(KD,JSON.stringify(D))}catch(e){ok=false}
+  if(ok)dirty=false;syncBar();b.textContent=ok?"Saved ✓":"Could not save";setTimeout(()=>{b.textContent="Save progress"},1600)}
+addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+const get=id=>S[id]||(S[id]={t:0,m:0,a:0,b:0,r:0,f:0,c:0});
+const score=id=>{const s=S[id];return s?(s.t+s.m+s.a+s.b+s.r/3)/5:0};
+const ids=(sj)=>sj.m.flatMap((g,gi)=>g[1].map((_,i)=>sj.k+gi+"_"+i));
+const pct=list=>list.length?Math.round(list.reduce((a,id)=>a+score(id),0)/list.length*100):0;
+function dots(id,f,v,conf){let h='<span class="dots'+(conf?' conf':'')+'">';for(let n=1;n<=3;n++)h+=`<button class="dot${v>=n?' on c'+v:''}" data-id="${id}" data-f="${f}" data-v="${n}" aria-label="${f} level ${n}" aria-pressed="${v>=n}"></button>`;return h+'</span>'}
+function render(){
+  const all=SUBJ.flatMap(ids);
+  document.getElementById("tp").textContent=pct(all)+"%";
+  document.getElementById("tb").style.width=pct(all)+"%";
+  document.getElementById("tabs").innerHTML=SUBJ.map((s,i)=>`<button class="tab" role="tab" aria-selected="${i==cur}" data-tab="${i}"><strong>${SEM[s.k]} ${s.n}</strong><span>${pct(ids(s))}% done</span></button>`).join("");
+  const sj=SUBJ[cur];
+  document.getElementById("note").textContent=sj.note;
+  let h=`<tr><th class="l" style="padding-left:12px">Chapter</th><th>Theory</th><th>Module<small>50-60 Qns</small></th><th>PYQ<small>${sj.py[0]}</small></th><th>PYQ<small>${sj.py[1]}</small></th><th>Revision<small>cycle</small></th><th>Formula<small>revision</small></th><th>Confidence<small>meter</small></th></tr>`;
+  sj.m.forEach((g,gi)=>{
+    const gid=g[1].map((_,i)=>sj.k+gi+"_"+i);
+    h+=`<tr class="grp"><td colspan="8">${g[0]}<em>${pct(gid)}% · ${gid.filter(x=>score(x)==1).length}/${gid.length} chapters complete</em></td></tr>`;
+    g[1].forEach((c,i)=>{
+      const id=gid[i],s=get(id);
+      h+=`<tr class="${score(id)==1?'done':''}"><td class="l" style="padding-left:12px"><span class="nm">${c}${score(id)==1?" ✅":""}</span></td>`;
+      ["t","m","a","b"].forEach(f=>{h+=`<td><input type="checkbox" class="cb" data-id="${id}" data-f="${f}" ${s[f]?'checked':''} aria-label="${c}: ${f}"></td>`});
+      h+=`<td>${dots(id,"r",s.r)}</td><td>${dots(id,"f",s.f)}</td><td>${dots(id,"c",s.c,1)}</td></tr>`;
+    });
+  });
+  document.getElementById("tbl").innerHTML=h;
+  const rb=document.getElementById("reset");rb.textContent=armed?"Tap again to confirm":"Reset this subject";
+}
+document.addEventListener("click",e=>{
+  const t=e.target;
+  if(t.dataset.tab!==undefined||t.closest("[data-tab]")){cur=+(t.closest("[data-tab]").dataset.tab);armed=false;render();return}
+  if(t.id==="reset"){if(armed){ids(SUBJ[cur]).forEach(id=>delete S[id]);save();armed=false}else{armed=true}render();return}
+  if(t.classList.contains("dot")){const s=get(t.dataset.id),f=t.dataset.f,v=+t.dataset.v;s[f]=s[f]===v?v-1:v;save();render();
+    const nb=document.querySelector(`.dot[data-id="${t.dataset.id}"][data-f="${f}"][data-v="${v}"]`);if(nb)nb.focus();}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;if(!t.classList.contains("cb")||!t.dataset.f)return;
+  get(t.dataset.id)[t.dataset.f]=t.checked?1:0;save();render();
+  const nb=document.querySelector(`.cb[data-id="${t.dataset.id}"][data-f="${t.dataset.f}"]`);if(nb)nb.focus();
+});
+
+const EXAM=new Date(2027,0,22),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const dn=document.getElementById("dn"),dl=document.getElementById("dl");
+const daysLeft=()=>{const n=new Date();return Math.round((EXAM-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)};
+function updateDays(first){
+  const d=Math.max(0,daysLeft());
+  dl.textContent=d===0?"JEE MAIN IS HERE":d===1?"DAY LEFT":"DAYS LEFT";
+  if(first&&!RM){const t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/1500),e=1-Math.pow(1-k,3);dn.textContent=Math.round(d*e);if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+  else dn.textContent=d;
+}
+updateDays(true);
+setInterval(()=>updateDays(false),60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)updateDays(false)});
+const track=document.getElementById("track"),sc=document.getElementById("scene"),ht=document.getElementById("htxt"),vl=document.getElementById("veil"),cue=document.getElementById("cue"),ly=[...document.querySelectorAll(".ly")];
+let tk=false;
+function onScroll(){if(tk)return;tk=true;requestAnimationFrame(()=>{tk=false;
+  const max=Math.max(1,track.offsetHeight-innerHeight),p=Math.min(1,Math.max(0,scrollY/max));
+  sc.style.transform="scale("+(1+p*.16)+")";
+  ly.forEach(g=>g.style.transform="translate("+p*(+g.dataset.x||0)+"px,"+p*g.dataset.s*900+"px)");
+  ht.style.transform="translateY("+(-p*150)+"px) scale("+(1-p*.14)+")";
+  ht.style.opacity=Math.max(0,1-p*1.7);
+  vl.style.opacity=p*.6;cue.style.opacity=Math.max(0,1-p*5);
+})}
+if(!RM){addEventListener("scroll",onScroll,{passive:true});addEventListener("resize",onScroll);onScroll()}
+const rvs=document.querySelectorAll(".rv");
+if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});rvs.forEach((el,i)=>{el.style.transitionDelay=(i%2?.08:0)+"s";io.observe(el)})}else rvs.forEach(el=>el.classList.add("in"));
+
+const KD="jee2027-study-v1",SN={p:"Physics",c:"Chemistry",m:"Maths"},SC={p:"#2447f5",c:"#12a36a",m:"#f0a202"},DUR={f:1500,s:300,l:900};
+let D={log:{},goals:{p:120,c:120,m:120},habits:null,notes:{},todos:[],events:{}};
+try{Object.assign(D,JSON.parse(localStorage.getItem(KD)||"{}"))}catch(e){}
+if(D.pdur)for(const m in D.pdur)if(DUR[m]&&D.pdur[m]>0)DUR[m]=Math.min(180,Math.round(D.pdur[m]))*60;
+D.todos=D.todos||[];D.events=D.events||{};
+
+D.habits=D.habits||[{id:1,n:"Theory / class notes",d:{}},{id:2,n:"Solve PYQs",d:{}},{id:3,n:"Revise formulas",d:{}}];
+const $=id=>document.getElementById(id),esc=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dk=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const back=n=>{const d=new Date();d.setDate(d.getDate()-n);return dk(d)};
+if(Array.isArray(D.targets)){D.targets.forEach((g,i)=>{const nm={hr:"Study "+g.n+" hours",streak:"Reach a "+g.n+"-day streak",chap:"Complete "+g.n+" chapters"}[g.type];if(nm)D.todos.push({id:Date.now()+i,t:nm,due:g.dl||dk(),done:0})})}
+delete D.targets;delete D.cards;delete D.known;
+D.todos.forEach(x=>{if(!x.due)x.due=dk(new Date(x.id))});
+const dsec=k=>{const x=D.log[k];return x?(x.p||0)+(x.c||0)+(x.m||0):0};
+const p2=n=>String(n).padStart(2,"0"),hm=t=>p2(Math.floor(t/3600))+":"+p2(Math.floor(t%3600/60))+":"+p2(t%60);
+const mm=t=>Math.round(t/60),hrm=t=>Math.floor(t/3600)+"h "+Math.floor(t%3600/60)+"m";
+const studied=k=>dsec(k)>=60||D.habits.some(h=>h.d[k]);
+function streaks(){let now=0,i=studied(back(0))?0:1;while(i<400&&studied(back(i))){now++;i++}
+  let best=0,run=0;for(let j=399;j>=0;j--){if(studied(back(j))){run++;best=Math.max(best,run)}else run=0}return{now,best}}
+const hst=h=>{let n=0,i=h.d[back(0)]?0:1;while(i<400&&h.d[back(i)]){n++;i++}return n};
+/* timers */
+let T=null,last=Date.now(),PM={mode:"f",left:DUR.f,sub:"p",done:0};
+function addT(s,sec){const k=dk(),x=D.log[k]=D.log[k]||{p:0,c:0,m:0};x[s]=(x[s]||0)+sec;save()}
+function beep(){try{const c=new(window.AudioContext||window.webkitAudioContext)();[0,.3,.6].forEach(t=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.value=.15;o.connect(g);g.connect(c.destination);o.start(c.currentTime+t);o.stop(c.currentTime+t+.18)})}catch(e){}}
+function nextMode(){if(PM.mode==="f"){PM.done++;PM.mode=PM.done%4===0?"l":"s"}else PM.mode="f";PM.left=DUR[PM.mode];T=null}
+setInterval(()=>{const now=Date.now(),dt=Math.floor((now-last)/1000);if(dt<1)return;last+=dt*1000;if(!T)return;
+  if(T.k==="s")addT(T.s,dt);else{const u=Math.min(dt,PM.left);if(PM.mode==="f")addT(PM.sub,u);PM.left-=u;if(PM.left<=0){beep();nextMode()}}
+  if(VIEW==="timers")paintTimers()},250);
+const togS=s=>{T=T&&T.k==="s"&&T.s===s?null:{k:"s",s};last=Date.now();paintTimers()};
+const togP=()=>{T=T&&T.k==="p"?null:{k:"p"};last=Date.now();paintTimers()};
+function paintTimers(){if(!$("pt"))return;
+  $("pt").textContent=p2(Math.floor(PM.left/60))+":"+p2(PM.left%60);$("pr").style.strokeDashoffset=326.7*(1-PM.left/DUR[PM.mode]);
+  $("pgo").textContent=T&&T.k==="p"?"Pause":"Start";$("pn").textContent="Focus sessions done: "+PM.done+" · focus time logs to the subject below";
+  const td=D.log[dk()]||{};
+  for(const s in SN){const sec=td[s]||0,g=D.goals[s]*60;$("ts-"+s).textContent=hm(sec);$("tb-"+s).style.width=Math.min(100,g?sec/g*100:0)+"%";
+    $("tl-"+s).textContent=g?Math.min(100,Math.round(sec/g*100))+"% of "+D.goals[s]+" min daily goal":"No goal set";$("tg-"+s).textContent=T&&T.k==="s"&&T.s===s?"Pause":"Start"}
+  document.querySelectorAll("[data-a=pmode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===PM.mode))}
+function renderTimers(){$("v-timers").innerHTML=`<div class="g2"><div class="card" style="text-align:center"><h3>Focus timer</h3>
+<div class="modes">${[["f","Focus "+DUR.f/60],["s","Short break "+DUR.s/60],["l","Long break "+DUR.l/60]].map(([m,l])=>`<button class="btn" data-a="pmode" data-m="${m}" aria-pressed="false">${l}</button>`).join("")}</div>
+<div class="frm" style="margin-bottom:4px">${[["f","Focus"],["s","Short"],["l","Long"]].map(([m,l])=>`<label class="mu" style="margin:0">${l} <input class="in" type="number" min="1" max="180" step="1" style="width:64px" value="${DUR[m]/60}" data-a="pdur" data-m="${m}" aria-label="${l} length in minutes"></label>`).join("")}<span class="mu" style="margin:0">minutes</span></div>
+<div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="8"/><circle id="pr" cx="60" cy="60" r="52" fill="none" stroke="var(--acc)" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.7" transform="rotate(-90 60 60)"/></svg><b id="pt">25:00</b></div>
+<p><label class="mu">Log focus time to <select class="in" data-a="psub">${Object.keys(SN).map(s=>`<option value="${s}" ${PM.sub===s?"selected":""}>${SN[s]}</option>`).join("")}</select></label></p>
+<button class="btn p" id="pgo" data-a="pgo">Start</button> <button class="btn" data-a="prst">Reset</button><p class="mu" id="pn"></p></div>
+<div>${Object.keys(SN).map(s=>`<div class="card"><h3 style="color:${SC[s]}">${SN[s]} today</h3><div class="big" id="ts-${s}"></div><div class="bar"><i id="tb-${s}" style="background:${SC[s]}"></i></div><p class="mu" id="tl-${s}"></p>
+<label class="mu">Daily goal (min) <input class="in" type="number" min="0" max="1440" style="width:90px" value="${D.goals[s]}" data-a="goal" data-s="${s}"></label> <button class="btn p" id="tg-${s}" data-a="sgo" data-s="${s}">Start</button></div>`).join("")}</div></div>`;paintTimers()}
+/* streaks + habits */
+function renderStreaks(){const st=streaks();let tot=0;for(let i=0;i<400;i++)if(studied(back(i)))tot++;
+  const t=new Date(),start=new Date(t.getFullYear(),t.getMonth(),t.getDate()-114);let cells="";for(let i=0;i<start.getDay();i++)cells+='<i style="visibility:hidden"></i>';
+  for(let d=new Date(start);d<=t;d.setDate(d.getDate()+1)){const k=dk(d),m=mm(dsec(k));cells+=`<i class="l${!studied(k)?0:m>=180?4:m>=90?3:m>=30?2:1}" title="${k}: ${m} min"></i>`}
+  const today=dk();
+  $("v-streaks").innerHTML=`<div class="stats"><div class="st"><b>🔥 ${st.now}</b><span>Current streak (days)</span></div><div class="st"><b>${st.best}</b><span>Best streak</span></div><div class="st"><b>${tot}</b><span>Days studied</span></div></div>
+<div class="card"><h3>Streak calendar</h3><div class="hm">${cells}</div><p class="mu">A day counts when you log 1+ minute on a timer or tick a habit. Darker green means more study time. Shows the last 115 days.</p></div>
+<div class="card"><h3>Daily habits</h3>${D.habits.map(h=>`<div class="hb"><input type="checkbox" class="cb" data-a="hchk" data-id="${h.id}" ${h.d[today]?"checked":""} aria-label="${esc(h.n)} today"><span style="flex:1">${esc(h.n)}</span><span class="p7" title="Last 7 days">${[6,5,4,3,2,1,0].map(i=>`<i class="${h.d[back(i)]?"on":""}"></i>`).join("")}</span><b title="Habit streak">🔥${hst(h)}</b><button class="btn" data-a="hdel" data-id="${h.id}" aria-label="Delete habit">✕</button></div>`).join("")}
+<div class="frm" style="justify-content:flex-start;margin:12px 0 0"><input class="in" id="hn" placeholder="New daily habit" style="flex:1"><button class="btn p" data-a="hadd">Add habit</button></div></div>`}
+/* analytics */
+function renderAnalytics(){const ds=[...Array(7)].map((_,i)=>back(6-i)),sm=(a,b)=>{let t=0;for(let i=a;i<b;i++)t+=dsec(back(i));return t},tw=sm(0,7),lw=sm(7,14);
+  let best=0;for(let i=0;i<90;i++)best=Math.max(best,dsec(back(i)));const diff=mm(tw)-mm(lw),mx=Math.max(3600,...ds.map(dsec)),sc=140/mx;
+  const bars=ds.map((k,i)=>{const x=24+i*76;let acc=0;const r=Object.keys(SN).map(s=>{const h=((D.log[k]||{})[s]||0)*sc,y=170-acc-h;acc+=h;return h>0?`<rect x="${x}" y="${y}" width="46" height="${h}" fill="${SC[s]}"/>`:""}).join("");
+    return r+`<text x="${x+23}" y="${165-acc}" text-anchor="middle" font-size="12">${mm(dsec(k))}m</text><text x="${x+23}" y="192" text-anchor="middle" font-size="12">${new Date(k+"T00:00").toLocaleDateString("en",{weekday:"short"})}</text>`}).join("");
+  const tot={p:0,c:0,m:0};for(let i=0;i<30;i++){const x=D.log[back(i)];if(x)for(const s in tot)tot[s]+=x[s]||0}const all=tot.p+tot.c+tot.m;
+  $("v-analytics").innerHTML=`<div class="stats"><div class="st"><b>${mm(dsec(dk()))}m</b><span>Studied today</span></div><div class="st"><b>${hrm(tw)}</b><span>Last 7 days (${diff>=0?"+":""}${diff}m vs previous 7)</span></div><div class="st"><b>${hrm(best)}</b><span>Best day (90 days)</span></div><div class="st"><b>${hrm(tw/7)}</b><span>Daily average</span></div></div>
+<div class="card"><h3>Study time, last 7 days</h3><svg viewBox="0 0 560 205" style="width:100%;height:auto;color:var(--mute)"><line x1="10" x2="550" y1="170" y2="170" stroke="var(--line)"/><g fill="currentColor">${bars}</g></svg>
+<p class="mu">${Object.keys(SN).map(s=>`<span style="color:${SC[s]}">■</span> ${SN[s]}`).join("&nbsp;&nbsp; ")}</p></div>
+<div class="card"><h3>Subject balance, last 30 days</h3>${all?"":'<p class="mu">Run a timer to see your split here.</p>'}${SUBJ.map(sj=>{const s=sj.k,sh=all?tot[s]/all*100:0;return `<div class="hb"><b style="width:96px;color:${SC[s]}">${sj.n}</b><div style="flex:1"><div class="bar"><i style="width:${sh}%;background:${SC[s]}"></i></div></div><span class="mu" style="min-width:130px;text-align:right">${hrm(tot[s])} · ${Math.round(sh)}%</span></div><div class="mu" style="margin:-2px 0 4px 106px">Syllabus done: ${pct(ids(sj))}%</div>`}).join("")}</div>`}
+/* to-do checklist (auto-dated) */
+let VD=null,TP=false,TM=null;
+const dayDiff=d=>Math.round((new Date(d+"T00:00")-new Date(dk()+"T00:00"))/864e5);
+const fmtD=d=>new Date(d+"T00:00").toLocaleDateString("en",{day:"numeric",month:"short"});
+function dayLabel(d){const n=dayDiff(d),w=new Date(d+"T00:00").toLocaleDateString("en",{weekday:"short",day:"numeric",month:"short"});return n===0?"Today · "+w:n===-1?"Yesterday · "+w:n===1?"Tomorrow · "+w:w}
+function todoList(d){const t=dk();return D.todos.filter(x=>x.due===d||(d===t&&x.due<t&&!x.done)).sort((a,b)=>(a.due<b.due?-1:a.due>b.due?1:0)||(a.id-b.id))}
+function todoPop(){const t=dk(),v=VD||t;if(!TM){const b=new Date(v+"T00:00");TM={y:b.getFullYear(),m:b.getMonth()}}
+  const pad=new Date(TM.y,TM.m,1).getDay(),dim=new Date(TM.y,TM.m+1,0).getDate();
+  let c=["S","M","T","W","T","F","S"].map(d=>`<div class="cw">${d}</div>`).join("");
+  for(let i=0;i<pad;i++)c+='<span class="md blank"></span>';
+  for(let d=1;d<=dim;d++){const k=TM.y+"-"+p2(TM.m+1)+"-"+p2(d),xs=D.todos.filter(x=>x.due===k);
+    c+=`<button class="md${k===t?" today":""}${k===v?" sel":""}" data-a="tpick" data-k="${k}" aria-label="${fmtD(k)}${xs.length?", "+xs.length+" tasks":""}">${d}${xs.length?`<i style="background:${xs.every(x=>x.done)?"var(--ok)":"var(--mid)"}"></i>`:""}</button>`}
+  return `<div class="tdcal" role="dialog" aria-label="Pick a date"><div class="mch"><button class="btn" data-a="tpm" data-v="-1" aria-label="Previous month">←</button><b>${new Date(TM.y,TM.m,1).toLocaleDateString("en",{month:"long",year:"numeric"})}</b><button class="btn" data-a="tpm" data-v="1" aria-label="Next month">→</button></div><div class="mc">${c}</div><p class="mu" style="margin:8px 0 0"><span style="color:var(--mid)">●</span> pending &nbsp;<span style="color:var(--ok)">●</span> all done</p></div>`}
+function renderTodo(){
+  const t=dk(),v=VD||t,list=todoList(v),done=list.filter(x=>x.done).length,pc=list.length?Math.round(done/list.length*100):0;
+  const rows=list.map(x=>`<div class="tdrow${x.done?" fin":""}"><input type="checkbox" class="cb" data-a="tchk" data-id="${x.id}" ${x.done?"checked":""} aria-label="Done: ${esc(x.t)}"><span class="tdt">${esc(x.t)}</span>${x.due<v?`<span class="chip" style="color:var(--low)" title="Carried over from an earlier day">from ${fmtD(x.due)}</span>`:""}<button class="tdx" data-a="tdel" data-id="${x.id}" aria-label="Delete task">✕</button></div>`).join("");
+  $("v-todo").innerHTML=`<div class="card tdc"><div class="tdh"><h3>🎯 To-do list<small>${dayLabel(v)}${list.length?" · "+done+"/"+list.length+" done":""}</small></h3><input type="text" class="tnote" data-a="tnote" maxlength="60" value="${esc(D.todoNote||"")}" placeholder="✍️ e.g. 45 days left for JEE Main" aria-label="Big note, for example days left">${VD&&VD!==t?'<button class="btn" data-a="ttoday">Back to today</button>':""}<button class="btn" data-a="tpop" aria-expanded="${TP}" aria-label="Open calendar" title="Pick a date">📅</button>${TP?todoPop():""}</div>
+<div class="bar" style="height:5px;margin:10px 0"><i style="width:${pc}%;background:var(--ok)"></i></div>
+<div class="frm" style="justify-content:flex-start;margin:0 0 6px"><input class="in" id="todo-t" placeholder="Add a task for ${v===t?"today":fmtD(v)}…" style="flex:1;min-width:0" maxlength="200"><button class="btn p" data-a="tadd">Add</button></div>
+${rows||'<p class="mu">Nothing planned for this day. Add a task above ✅</p>'}</div>`}
+/* calendar */
+const EV={i:["Important","var(--low)"],t:["Test / exam","var(--acc)"],d:["Deadline","var(--mid)"],o:["Other","var(--ok)"]},FIXED={"2027-01-22":"🎯 JEE Main 2027 begins"};
+const _n=new Date();let CM={y:_n.getFullYear(),m:_n.getMonth()},CS=dk(),EK="i";
+function dayItems(k){const o=[];if(FIXED[k])o.push({t:FIXED[k],c:"var(--acc2)",src:"fixed"});
+  (D.events[k]||[]).forEach(e=>{const v=EV[e.k]||EV.o;o.push({id:e.id,t:e.t,c:v[1],kn:v[0],src:"ev"})});
+  D.todos.filter(x=>x.due===k).forEach(x=>o.push({t:x.t,c:"var(--dot)",src:"todo",done:x.done}));return o}
+function renderCal(){
+  const today=dk(),first=new Date(CM.y,CM.m,1),pad=first.getDay(),dim=new Date(CM.y,CM.m+1,0).getDate();
+  let cells=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div class="cw">${d}</div>`).join("");
+  for(let i=0;i<pad;i++)cells+='<div class="cd blank"></div>';
+  for(let d=1;d<=dim;d++){const k=CM.y+"-"+p2(CM.m+1)+"-"+p2(d),it=dayItems(k);
+    cells+=`<button class="cd${k===today?" today":""}${k===CS?" sel":""}" data-a="cpick" data-k="${k}" aria-label="${fmtD(k)}, ${it.length} item${it.length===1?"":"s"}" aria-pressed="${k===CS}"><b>${d}</b>${it.length?`<span class="cdots">${it.slice(0,4).map(i=>`<i style="background:${i.c}"></i>`).join("")}</span><span class="ct">${esc(it[0].t)}${it.length>1?" +"+(it.length-1):""}</span>`:""}</button>`}
+  const sel=dayItems(CS),title=new Date(CS+"T00:00").toLocaleDateString("en",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  const selRows=sel.map(i=>`<div class="evr"><span class="sq" style="background:${i.c}"></span><span style="flex:1;overflow-wrap:anywhere${i.done?";text-decoration:line-through;color:var(--mute)":""}">${esc(i.t)}${i.src==="todo"?' <span class="mu">· to-do</span>':i.src==="ev"?` <span class="mu">· ${i.kn}</span>`:""}</span>${i.src==="ev"?`<button class="btn" data-a="edel" data-id="${i.id}" data-k="${CS}" aria-label="Delete">✕</button>`:""}</div>`).join("");
+  const up=[];for(const k in D.events)if(k>=today)D.events[k].forEach(e=>up.push({k,e}));
+  for(const k in FIXED)if(k>=today)up.push({k,e:{t:FIXED[k],k:"x"}});
+  up.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:0);
+  const upRows=up.slice(0,8).map(({k,e})=>{const n=dayDiff(k),c=e.k==="x"?"var(--acc2)":(EV[e.k]||EV.o)[1];return `<div class="evr"><span class="sq" style="background:${c}"></span><span style="flex:1;overflow-wrap:anywhere">${esc(e.t)}</span><span class="mu" style="margin:0;white-space:nowrap">${fmtD(k)} · ${n===0?"today":n===1?"tomorrow":"in "+n+"d"}</span></div>`}).join("");
+  $("v-calendar").innerHTML=`<div class="sechead"><h2>🗓️ Calendar</h2><p>Tap a date to save something important on it. Tasks with a due date show up here too.</p></div>
+<div class="g2" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))"><div class="card"><div class="calh"><button class="btn" data-a="cprev" aria-label="Previous month">←</button><h3>${new Date(CM.y,CM.m,1).toLocaleDateString("en",{month:"long",year:"numeric"})}</h3><button class="btn" data-a="cnext" aria-label="Next month">→</button><button class="btn" data-a="ctoday">Today</button></div><div class="cal">${cells}</div></div>
+<div><div class="card"><h3>${title}</h3>${selRows||'<p class="mu">Nothing saved for this day yet.</p>'}
+<div class="seg" style="margin-top:12px">${Object.keys(EV).map(k=>`<button class="btn" data-a="etype" data-v="${k}" aria-pressed="${EK===k}"><span style="color:${EV[k][1]}">●</span> ${EV[k][0]}</button>`).join("")}</div>
+<div class="frm" style="justify-content:flex-start;margin:10px 0 0"><input class="in" id="ev-t" placeholder="Write something important…" style="flex:1;min-width:160px" maxlength="200"><button class="btn p" data-a="eadd">Save</button></div></div>
+<div class="card"><h3>Coming up</h3>${upRows||'<p class="mu">Nothing saved ahead of you yet.</p>'}</div></div></div>`}
+/* sticky notes */
+
+const SEM={p:"⚡",c:"🧪",m:"📐"};
+const CH=SUBJ.flatMap(sj=>sj.m.flatMap((g,gi)=>g[1].map((n,i)=>({id:sj.k+gi+"_"+i,n,s:sj.n}))));
+/* rotating quote: changes every 6 hours, cycles through every quote before repeating */
+const QUOTES=[
+"“कर्मण्येवाधिकारस्ते मा फलेषु कदाचन — You have the right to your actions, never to their fruits.” — Gita 2.47 🎯",
+"“उद्धरेदात्मनात्मानं — Uplift yourself by your own mind; never let it pull you down.” — Gita 6.5 🌱",
+"“योगः कर्मसु कौशलम् — Yoga is skill in action.” — Gita 2.50 🧘",
+"“योगस्थः कुरु कर्माणि — Stay steady, then act; be even-minded in success and failure.” — Gita 2.48 🧭",
+"“स्वल्पमप्यस्य धर्मस्य त्रायते महतो भयात् — Even a little effort on this path saves you from great fear.” — Gita 2.40 ✨",
+"“अभ्यासेन तु कौन्तेय वैराग्येण च गृह्यते — The restless mind is held by practice and detachment.” — Gita 6.35 🧠",
+"“बन्धुरात्मात्मनस्तस्य — For one who has conquered the mind, the mind is the best friend.” — Gita 6.6 🤝",
+"“श्रद्धावाँल्लभते ज्ञानम् — The one with faith and self-control gains knowledge.” — Gita 4.39 📚",
+"“न हि ज्ञानेन सदृशं पवित्रमिह विद्यते — Nothing in this world purifies like knowledge.” — Gita 4.38 📖",
+"“श्रेयान्स्वधर्मो विगुणः — Better to do your own duty imperfectly than another's duty well.” — Gita 3.35 💪",
+"“नियतं कुरु कर्म त्वं कर्म ज्यायो ह्यकर्मणः — Do your work; action is better than inaction.” — Gita 3.8 ⚡",
+"“युक्तस्वप्नावबोधस्य योगो भवति दुःखहा — Balanced sleep and wakefulness, and yoga removes sorrow.” — Gita 6.17 🌙",
+"“यद्यदाचरति श्रेष्ठस्तत्तदेवेतरो जनः — Whatever a great person does, others follow.” — Gita 3.21 🌟",
+"“क्रोधाद्भवति सम्मोहः — Anger clouds the mind, and a clouded mind forgets what it learned.” — Gita 2.63 🔥",
+"“यत्करोषि यदश्नासि ... तत्कुरुष्व मदर्पणम् — Whatever you do, do it as your best offering.” — Gita 9.27 🙏",
+"“यत्र योगेश्वरः कृष्णो यत्र पार्थो धनुर्धरः, तत्र श्रीर्विजयः — Where there is wisdom and the will to act, there is victory.” — Gita 18.78 🏹",
+"“मा ते सङ्गोऽस्त्वकर्मणि — Do not let results be your motive, and do not cling to inaction either.” — Gita 2.47 🚀",
+"“मुक्तसङ्गोऽनहंवादी धृत्युत्साहसमन्वितः — Free from ego, steady and enthusiastic: that is a true worker.” — Gita 18.26 🌤️",
+"“तांस्तितिक्षस्व भारत — Heat and cold, pleasure and pain come and go; learn to endure them.” — Gita 2.14 🌦️",
+"“दुःखेष्वनुद्विग्नमनाः सुखेषु विगतस्पृहः — Not shaken by sorrow, not greedy for pleasure: that is steady wisdom.” — Gita 2.56 🏔️",
+"“नास्ति बुद्धिरयुक्तस्य — Without a steady mind there is no wisdom, no peace and no happiness.” — Gita 2.66 🕊️",
+"“तस्मादसक्तः सततं कार्यं कर्म समाचर — Keep doing your work without attachment, and you reach the highest.” — Gita 3.19 🌠",
+"“पद्मपत्रमिवाम्भसा — Act without attachment and stay untouched by wrong, like a lotus leaf by water.” — Gita 5.10 🪷",
+"“नात्यश्नतस्तु योगोऽस्ति न चैकान्तमनश्नतः — Not too much sleep, not too little; not too much food, not too little.” — Gita 6.16 😴",
+"“न हि कल्याणकृत्कश्चिद् दुर्गतिं तात गच्छति — No one who does good ever comes to a bad end.” — Gita 6.40 🌈",
+"“अद्वेष्टा सर्वभूतानां मैत्रः करुण एव च — Be free of hatred, friendly and kind to all.” — Gita 12.13 🤍",
+"“क्षुद्रं हृदयदौर्बल्यं त्यक्त्वोत्तिष्ठ परन्तप — Shake off this petty weakness of heart and rise.” — Gita 2.3 🦁",
+"“सुखदुःखे समे कृत्वा लाभालाभौ जयाजयौ — Treat gain and loss, victory and defeat alike, then get ready to act.” — Gita 2.38 🥋",
+"“संशयात्मा विनश्यति — The doubting mind is lost; keep faith and keep learning.” — Gita 4.40 🌫️",
+"“तस्मात्त्वमुत्तिष्ठ यशो लभस्व — Therefore rise up, and win glory.” — Gita 11.33 🌄",
+"“कर्म प्रधान बिस्व करि राखा, जो जस करइ सो तस फलु चाखा — The world runs on action; as you do, so you reap.” — Ramcharitmanas 🌾",
+"“सकल पदारथ एहि जग माहीं, कर्महीन नर पावत नाहीं — Everything is in this world, but the one who doesn't act never gets it.” — Ramcharitmanas 🗝️",
+"“राम काजु कीन्हें बिनु मोहि कहाँ बिश्राम — There is no rest for me until the work is done.” — Hanuman, Ramcharitmanas 🚩",
+"“जहाँ सुमति तहँ संपति नाना — Where there is good sense, there is all kinds of wealth.” — Ramcharitmanas 💡",
+"“धीरज धरम मित्र अरु नारी, आपद काल परखिअहिं चारी — Patience, dharma, friends and spouse are all tested in hard times.” — Ramcharitmanas 🛡️",
+"“बिनु सतसंग बिबेक न होई — Without good company, wisdom does not arise.” — Ramcharitmanas 🌿",
+"“धरम न दूसर सत्य समाना — No dharma is equal to truth.” — Ramcharitmanas 🕉️",
+"“जाकी रही भावना जैसी, प्रभु मूरति तिन्ह देखी तैसी — As your heart is, so you see the world.” — Ramcharitmanas 🪞",
+"“परहित सरिस धर्म नहिं भाई — No dharma is greater than helping others.” — Ramcharitmanas 🌍",
+"“सहज सुहृद गुर स्वामि सिख जो न करइ सिर मानि, सो पछिताइ अघाइ उर अवसि होइ हित हानि — One who ignores the advice of a well-wishing teacher will surely regret it.” — Ramcharitmanas 🎓",
+"“का बरषा सब कृषी सुखानें, समय चुकें पुनि का पछितानें — What use is rain after the crop has dried? What use is regret after the time is gone?” — Ramcharitmanas ⏳",
+"“रघुकुल रीति सदा चलि आई, प्रान जाहुँ बरु बचनु न जाई — Life may go, but a promise must not be broken.” — Ramcharitmanas 🤞",
+"“प्रबिसि नगर कीजे सब काजा, हृदयँ राखि कोसलपुर राजा — Do all your work, keeping faith in your heart.” — Ramcharitmanas 🏙️",
+"“सो सब तव प्रताप रघुराई, नाथ न कछू मोरि प्रभुताई — It is all your grace, nothing here is my own greatness.” — Hanuman, Ramcharitmanas 🙇",
+"“राम नाम मनि दीप धरु जीह देहरीं द्वार, तुलसी भीतर बाहेरहुँ जौं चाहसि उजिआर — Keep the lamp of the Name at your doorstep if you want light inside and out.” — Ramcharitmanas 🪔",
+"“सचिव बैद गुर तीनि जौं प्रिय बोलहिं भय आस, राज धर्म तन तीनि कर होइ बेगिहीं नास — Advisers, doctors and teachers who only please, out of fear or hope, bring quick ruin.” — Ramcharitmanas ⚠️",
+"“बल बुद्धि बिद्या देहु मोहि, हरहु कलेस बिकार — Grant me strength, intelligence and knowledge, and remove my troubles.” — Hanuman Chalisa, Tulsidas 📿",
+"“कठिन काज जगत के जेते, सुगम अनुग्रह तुम्हरे तेते — Every difficult task in the world becomes easy by grace.” — Hanuman Chalisa, Tulsidas 💫",
+"“विद्यावान गुनी अति चातुर, राम काज करिबे को आतुर — Learned, skilled and sharp, and eager to do the work at hand.” — Hanuman Chalisa, Tulsidas 📘",
+"“तुलसी साथी बिपति के, विद्या बिनय बिबेक; साहस सुकृत सुसत्यव्रत, राम भरोसे एक — Knowledge, humility, wisdom, courage, good deeds and truth stand by you in hard times.” — Tulsidas 🌄",
+"“तुलसी मीठे बचन ते, सुख उपजत चहुँ ओर — Sweet words bring happiness all around.” — Tulsidas 🌸",
+"“दया धर्म का मूल है, पाप मूल अभिमान — Compassion is the root of dharma; pride is the root of sin.” — Tulsidas 💧",
+"“आवत ही हरषै नहीं, नैनन नहीं सनेह; तुलसी तहाँ न जाइए, कंचन बरसे मेह — Don't go where you are welcomed without warmth, even if it rains gold.” — Tulsidas 🚪",
+"“काम क्रोध मद लोभ की, जौ लौं मन में खान; तौ लौं पंडित मूरखौं, तुलसी एक समान — While desire, anger, pride and greed live in the mind, the learned and the fool are alike.” — Tulsidas ⚖️",
+"“बिना तेज के पुरुष की, अवशि अवज्ञा होय; आगि बुझे ज्यों राख की, आप छुवे सब कोय — Without spirit a person is ignored, as everyone touches cold ashes.” — Tulsidas 🌋",
+"“तुलसी इस संसार में, भाँति भाँति के लोग; सबसे हिल मिल चालिए, नदी नाव संजोग — There are all kinds of people in this world; get along with all, like a boat with the river.” — Tulsidas 🛶",
+"“नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः — Weapons cannot cut the self and fire cannot burn it; fear has no hold on you.” — Gita 2.23 🛡️",
+"“न जायते म्रियते वा कदाचित् — The self is never born and never dies; it is eternal.” — Gita 2.20 🔆",
+"“दूरेण ह्यवरं कर्म बुद्धियोगाद्धनञ्जय — Action done with a steady mind is far better than action done for reward.” — Gita 2.49 🎖️",
+"“ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते — Dwelling on distractions breeds attachment; from attachment comes desire, and from desire, anger.” — Gita 2.62 📵",
+"“आपूर्यमाणमचलप्रतिष्ठं समुद्रमापः प्रविशन्ति यद्वत् — As rivers enter a still ocean, desires enter a calm mind and leave it undisturbed.” — Gita 2.70 🏞️",
+"“तस्मादुत्तिष्ठ कौन्तेय युद्धाय कृतनिश्चयः — Rise up with a firm resolve.” — Gita 2.37 🔱",
+"“व्यवसायात्मिका बुद्धिरेकेह कुरुनन्दन — The resolute mind is single-pointed; the wavering mind splits into endless branches.” — Gita 2.41 🔭",
+"“न कर्मणामनारम्भान्नैष्कर्म्यं पुरुषोऽश्नुते — Not beginning the work does not make you free of it.” — Gita 3.4 🌅",
+"“न हि कश्चित्क्षणमपि जातु तिष्ठत्यकर्मकृत् — No one can stay even a moment without action, so act well.” — Gita 3.5 ⏱️",
+"“इन्द्रियेभ्यः परं मनो मनसस्तु परा बुद्धिः — The senses are strong, the mind is stronger, and the intellect is stronger still.” — Gita 3.42 🧩",
+"“जहि शत्रुं महाबाहो कामरूपं दुरासदम् — Conquer the hard-to-catch enemy called desire.” — Gita 3.43 ⚔️",
+"“श्रेयान्द्रव्यमयाद्यज्ञाज्ज्ञानयज्ञः परन्तप — The offering of knowledge is greater than any offering of things.” — Gita 4.33 🕯️",
+"“तद्विद्धि प्रणिपातेन परिप्रश्नेन सेवया — Learn with humility, by asking questions, and with service.” — Gita 4.34 🙋",
+"“अनाश्रितः कर्मफलं कार्यं कर्म करोति यः — One who does the work without leaning on its reward is a true yogi.” — Gita 6.1 🌳",
+"“आरुरुक्षोर्मुनेर्योगं कर्म कारणमुच्यते — For one who wishes to climb, work is the ladder.” — Gita 6.3 🪜",
+"“यतो यतो निश्चरति मनश्चञ्चलमस्थिरम् — Wherever the restless mind wanders, bring it back.” — Gita 6.26 🔄",
+"“तस्मात्सर्वेषु कालेषु मामनुस्मर युध्य च — At all times keep your goal in mind, and do your work.” — Gita 8.7 📌",
+"“तेषां नित्याभियुक्तानां योगक्षेमं वहाम्यहम् — For those steadily devoted, what they lack is provided and what they have is protected.” — Gita 9.22 🤲",
+"“कामः क्रोधस्तथा लोभस्तस्मादेतत्त्रयं त्यजेत् — Desire, anger and greed are the gates to ruin; give them up.” — Gita 16.21 🚧",
+"“अनुद्वेगकरं वाक्यं सत्यं प्रियहितं च यत् — Speak words that are true, pleasant, helpful and never hurtful.” — Gita 17.15 🗣️",
+"“यत्तदग्रे विषमिव परिणामेऽमृतोपमम् — What feels like poison at first but becomes nectar in the end is true happiness.” — Gita 18.37 🍯",
+"“स्वे स्वे कर्मण्यभिरतः संसिद्धिं लभते नरः — Devoted to their own work, people attain perfection.” — Gita 18.45 🛠️",
+"“सहजं कर्म कौन्तेय सदोषमपि न त्यजेत् — Do not give up your duty just because it is imperfect.” — Gita 18.48 🧱",
+"“बंदउँ गुरु पद पदुम परागा — I bow to the dust of the teacher's lotus feet.” — Ramcharitmanas 🌺",
+"“सुमति कुमति सब कें उर रहहीं — Good sense and folly live in every heart; feed the one you choose.” — Ramcharitmanas 🧭",
+"“सिय राममय सब जग जानी, करउँ प्रनाम जोरि जुग पानी — Seeing the divine in the whole world, I bow to all with folded hands.” — Ramcharitmanas 🌏",
+"“बंदउँ संत समान चित हित अनहित नहिं कोइ — The good treat friend and foe alike, like a flower that perfumes both hands.” — Ramcharitmanas 🌼",
+"“कवन सो काज कठिन जग माहीं, जो नहिं होइ तात तुम पाहीं — Which task in this world is so hard that you cannot do it?” — Ramcharitmanas 🚀",
+"“बिनु बिस्वास भगति नहिं — Without faith there is no devotion.” — Ramcharitmanas 🕯️",
+"“मातु पिता गुरु प्रभु कै बानी, बिनहिं बिचार करिअ सुभ जानी — Take the word of your parents and teacher as being for your good.” — Ramcharitmanas 🙇",
+"“गुरु बिनु भव निधि तरइ न कोई — Without a teacher, no one crosses the ocean of life.” — Ramcharitmanas 🌊",
+"“बड़े भाग मानुष तन पावा — By great fortune you have received this human life; use it well.” — Ramcharitmanas 🍀",
+"“नर तन सम नहिं कवनिउ देही — There is no birth like a human birth; do not waste it.” — Ramcharitmanas 🎁",
+"“सुख हरषहिं जड़ दुख बिलखाहीं, दोउ सम धीर धरहिं मन माहीं — The fool rejoices in joy and wails in sorrow; the wise stay steady in both.” — Ramcharitmanas 🏔️",
+"“मन मलीन तन सुंदर कैसें, बिष रस भरा कनक घटु जैसें — A fair face with a dirty mind is like a golden pot filled with poison.” — Ramcharitmanas 🏺",
+"“मुखिआ मुखु सो चाहिऐ खान पान कहुँ एक, पालइ पोषइ सकल अंग तुलसी सहित बिबेक — A leader should be like the mouth: it eats alone, yet wisely nourishes every limb.” — Ramcharitmanas 👑",
+"“सतसंगत मुद मंगल मूला — Good company is the root of joy and well-being.” — Ramcharitmanas 🌳",
+"“श्रीगुरु चरन सरोज रज, निज मन मुकुर सुधारि — With the dust of the teacher's feet, polish the mirror of your mind.” — Hanuman Chalisa, Tulsidas 💎",
+"“जय हनुमान ज्ञान गुन सागर — Hail Hanuman, ocean of knowledge and virtue.” — Hanuman Chalisa, Tulsidas 📕",
+"“महाबीर बिक्रम बजरंगी, कुमति निवार सुमति के संगी — Mighty and brave; remover of bad sense, companion of good sense.” — Hanuman Chalisa, Tulsidas 🔱",
+"“संकट कटै मिटै सब पीरा, जो सुमिरै हनुमत बलबीरा — Troubles are cut and pain ends for one who remembers the brave Hanuman.” — Hanuman Chalisa, Tulsidas 🌞",
+"“आपन तेज सम्हारो आपै — Only you can hold your own radiance; know your strength.” — Hanuman Chalisa, Tulsidas 🔆",
+"“तुलसी काया खेत है, मनसा भयो किसान; पाप पुन्य दोउ बीज हैं, बुवै सो लुनै निदान — The body is a field and the mind the farmer; whatever you sow, you reap.” — Tulsidas 🚜",
+"“तुलसी नर का क्या बड़ा, समय बड़ा बलवान — Man is not great; time is powerful. Use it well.” — Tulsidas ⌛",
+"“एक घड़ी आधी घड़ी, आधी में पुनि आध; तुलसी संगत साधु की, हरै कोटि अपराध — Even a moment in good company removes countless faults.” — Tulsidas 🕰️",
+"“तुलसी संत सुअंब तरु, फूलि फलहिं परहेत; इतते ये पाहन हनत, उतते वे फल देत — Good people are like mango trees: hit with stones, they still give fruit.” — Tulsidas 🥭"];
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function quoteNow(){const d=new Date(),slot=Math.floor((d.getTime()-d.getTimezoneOffset()*6e4)/216e5),n=QUOTES.length;let st=Math.floor(n/2)+1;while(gcd(st,n)!==1)st++;return QUOTES[(slot*st)%n]}
+function paintQuote(){const q=quoteNow(),el=$("qt");if(el&&el.textContent!==q)el.textContent=q}
+paintQuote();setInterval(paintQuote,60000);
+/* sticky notes */
+const SW=["#ffe98a","#ffc2d4","#bfe3ff","#c9f2c7","#ffd3a1","#dcc8ff","#b8f0e6"],NEMO=["📌","📚","🔥","💡","⚠️","🎯","✅","❤️","🧠","⭐","🚀","💪"];
+let NE="📌",NCOL=SW[0];
+if(!D.stickies)D.stickies=[{id:1,e:"🔥",c:SW[0],r:-2,t:"PYQs 2019–22 first, then 2023–26!"},{id:2,e:"💪",c:SW[1],r:2,t:"You can do IT! #paperPhodnahai"},{id:3,e:"🧪",c:SW[3],r:-1,t:"Revise formulas every Sunday"}];
+for(const k in D.notes){const t=(D.notes[k]||"").trim(),c=CH.find(c=>c.id===k);if(t)D.stickies.push({id:Date.now()+Math.floor(Math.random()*1e5),e:"📝",c:SW[2],r:1,t:(c?c.n+": ":"")+t})}
+D.notes={};
+function renderNotes(){$("v-notes").innerHTML=`<div class="sechead"><h2>📌 Sticky notes</h2><p>Your own wall for reminders, tricks and pep talks.</p></div>
+<div class="card"><h3>Add a note</h3><textarea class="in" id="nt" rows="2" style="width:100%" placeholder="Write a reminder, a trick, a target… 💭"></textarea>
+<div class="pick">${NEMO.map(e=>`<button class="ch${e===NE?" on":""}" data-a="nemo" data-v="${e}" aria-label="Emoji ${e}">${e}</button>`).join("")}</div>
+<div class="pick">${SW.map(c=>`<button class="sw${c===NCOL?" on":""}" data-a="ncol" data-v="${c}" style="background:${c}" aria-label="Note colour"></button>`).join("")}<button class="btn p" data-a="nadd" style="margin-left:auto">Stick it 📌</button></div></div>
+<p class="notecount">${D.stickies.length} note${D.stickies.length===1?"":"s"} on your wall</p>
+<div class="wall">${D.stickies.map(n=>`<div class="sn" style="--c:${n.c};--r:${n.r}deg"><span class="em">${n.e}</span><button class="x" data-a="ndel" data-id="${n.id}" aria-label="Delete note">✕</button><textarea data-a="ntext" data-id="${n.id}" rows="5" aria-label="Note text">${esc(n.t)}</textarea><div class="pick sm">${SW.map(c=>`<button class="sw" data-a="nrec" data-id="${n.id}" data-v="${c}" style="background:${c}" aria-label="Recolour note"></button>`).join("")}</div></div>`).join("")||'<p class="mu" style="grid-column:1/-1">Your wall is empty. Stick your first note above! 📌</p>'}</div>`}
+/* nav + events */
+const VIEWS=[["syllabus","📚 Syllabus"],["timers","⏱️ Timers"],["streaks","🔥 Streaks & habits"],["analytics","📊 Analytics"],["todo","🎯 To-do"],["calendar","🗓️ Calendar"],["notes","📌 Sticky notes"]],RENDER={timers:renderTimers,streaks:renderStreaks,analytics:renderAnalytics,todo:renderTodo,calendar:renderCal,notes:renderNotes};
+let VIEW="syllabus";
+function showView(v){VIEW=v;TP=false;VIEWS.forEach(([k])=>{$("v-"+k).hidden=k!==v});$("nav").innerHTML=VIEWS.map(([k,l])=>`<button role="tab" aria-selected="${k===v}" data-view="${k}">${l}</button>`).join("");if(RENDER[v])RENDER[v]()}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a],[data-view]");if(!b)return;
+  if(b.dataset.view){showView(b.dataset.view);return}
+  const a=b.dataset.a,id=+b.dataset.id,s=b.dataset.s,v=b.dataset.v,kk=b.dataset.k;
+  if(a==="sgo")togS(s);else if(a==="pgo")togP();
+  else if(a==="prst"){PM.left=DUR[PM.mode];if(T&&T.k==="p")T=null;paintTimers()}
+  else if(a==="pmode"){PM.mode=b.dataset.m;PM.left=DUR[PM.mode];if(T&&T.k==="p")T=null;paintTimers()}
+  else if(a==="hdel"){D.habits=D.habits.filter(h=>h.id!==id);save();renderStreaks()}
+  else if(a==="hadd"){const t=$("hn").value.trim();if(t){D.habits.push({id:Date.now(),n:t,d:{}});save();renderStreaks()}}
+  else if(a==="tadd"){const t=$("todo-t").value.trim();if(t){D.todos.push({id:Date.now(),t,due:VD||dk(),done:0});save();renderTodo();$("todo-t").focus()}}
+  else if(a==="tdel"){D.todos=D.todos.filter(x=>x.id!==id);save();renderTodo()}
+  else if(a==="tpop"){TP=!TP;TM=null;renderTodo()}
+  else if(a==="tpm"){TM.m+=+v;if(TM.m<0){TM.m=11;TM.y--}if(TM.m>11){TM.m=0;TM.y++}renderTodo()}
+  else if(a==="tpick"){VD=kk===dk()?null:kk;TP=false;TM=null;renderTodo()}
+  else if(a==="ttoday"){VD=null;TP=false;TM=null;renderTodo()}
+  else if(a==="cprev"){CM.m--;if(CM.m<0){CM.m=11;CM.y--}renderCal()}
+  else if(a==="cnext"){CM.m++;if(CM.m>11){CM.m=0;CM.y++}renderCal()}
+  else if(a==="ctoday"){const n=new Date();CM={y:n.getFullYear(),m:n.getMonth()};CS=dk();renderCal()}
+  else if(a==="cpick"){CS=kk;renderCal()}
+  else if(a==="etype"){EK=v;document.querySelectorAll("[data-a=etype]").forEach(x=>x.setAttribute("aria-pressed",x===b))}
+  else if(a==="eadd"){const t=$("ev-t").value.trim();if(t){(D.events[CS]=D.events[CS]||[]).push({id:Date.now(),t,k:EK});save();renderCal();$("ev-t").focus()}}
+  else if(a==="edel"){D.events[kk]=(D.events[kk]||[]).filter(e=>e.id!==id);if(!D.events[kk].length)delete D.events[kk];save();renderCal()}
+  else if(a==="nemo"){NE=v;document.querySelectorAll("[data-a=nemo]").forEach(x=>x.classList.toggle("on",x===b))}
+  else if(a==="ncol"){NCOL=v;document.querySelectorAll("[data-a=ncol]").forEach(x=>x.classList.toggle("on",x===b))}
+  else if(a==="nadd"){const t=$("nt").value.trim();if(t){D.stickies.unshift({id:Date.now(),e:NE,c:NCOL,r:Math.round((Math.random()*6-3)*10)/10,t});save();renderNotes()}}
+  else if(a==="ndel"){D.stickies=D.stickies.filter(n=>n.id!==id);save();renderNotes()}
+  else if(a==="nrec"){const n=D.stickies.find(n=>n.id===id);if(n){n.c=v;b.closest(".sn").style.setProperty("--c",v);save()}}
+});
+document.addEventListener("change",e=>{const t=e.target,a=t.dataset.a;
+  if(a==="hchk"){const h=D.habits.find(h=>h.id===+t.dataset.id);if(t.checked)h.d[dk()]=1;else delete h.d[dk()];save();renderStreaks()}
+  else if(a==="goal"){D.goals[t.dataset.s]=Math.max(0,+t.value||0);save();paintTimers()}
+  else if(a==="psub")PM.sub=t.value;
+  else if(a==="pdur"){const m=t.dataset.m,old=DUR[m],v=Math.min(180,Math.max(1,Math.round(+t.value)||old/60));DUR[m]=v*60;D.pdur=D.pdur||{};D.pdur[m]=v;if(PM.mode===m)PM.left=(T&&T.k==="p")?Math.max(1,PM.left+DUR[m]-old):DUR[m];save();renderTimers()}
+  else if(a==="tchk"){const x=D.todos.find(x=>x.id===+t.dataset.id);if(x){x.done=t.checked?1:0;save();renderTodo()}}});
+document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.a==="ntext"){const n=D.stickies.find(n=>n.id===+t.dataset.id);if(n){n.t=t.value;save()}}});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const t=e.target;const a=t.id==="todo-t"?"tadd":t.id==="ev-t"?"eadd":null;if(a){e.preventDefault();const b=document.querySelector(`[data-a=${a}]`);if(b)b.click()}});
+document.addEventListener("click",e=>{if(TP&&VIEW==="todo"&&!e.target.closest(".tdcal,[data-a=tpop],[data-a=tpm],[data-a=tpick]")){TP=false;TM=null;renderTodo()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&TP){TP=false;TM=null;renderTodo()}});
+let LD=dk();setInterval(()=>{if(dk()!==LD){LD=dk();if(VIEW==="todo"&&!TP)renderTodo();else if(VIEW==="calendar")renderCal()}},30000);
+document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.a==="tnote"){D.todoNote=t.value;save()}});
+showView("syllabus");
+document.getElementById("sv").addEventListener("click",commit);
+syncBar();
+render();
+</script>
+</body>
+</html>
