@@ -345,7 +345,7 @@ D.habits=D.habits||[{id:1,n:"Theory / class notes",d:{}},{id:2,n:"Solve PYQs",d:
 const $=id=>document.getElementById(id),esc=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const dk=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const back=n=>{const d=new Date();d.setDate(d.getDate()-n);return dk(d)};
-if(Array.isArray(D.targets)){D.targets.forEach((g,i)=>{const nm={hr:"Study "+g.n+" hours",streak:"Reach a "+g.n+"-day streak",chap:"Complete "+g.n+" chapters"}[g.type];if(nm)D.todos.push({id:Date.now()+i,t:nm,due:g.dl||dk(),done:0})})}
+if(!D.goalsCleaned){const n0=D.todos.length;D.todos=D.todos.filter(x=>!/^(Study 100 hours|Complete 82 chapters|Reach a 30-day streak)$/.test(x.t));D.goalsCleaned=1;try{localStorage.setItem(KD,JSON.stringify(D))}catch(e){}}
 delete D.targets;delete D.cards;delete D.known;
 D.todos.forEach(x=>{if(!x.due)x.due=dk(new Date(x.id))});
 const dsec=k=>{const x=D.log[k];return x?(x.p||0)+(x.c||0)+(x.m||0):0};
