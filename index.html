@@ -379,7 +379,20 @@ function renderTimers(){$("v-timers").innerHTML=`<div class="g2"><div class="car
 <p><label class="mu">Log focus time to <select class="in" data-a="psub">${Object.keys(SN).map(s=>`<option value="${s}" ${PM.sub===s?"selected":""}>${SN[s]}</option>`).join("")}</select></label></p>
 <button class="btn p" id="pgo" data-a="pgo">Start</button> <button class="btn" data-a="prst">Reset</button><p class="mu" id="pn"></p></div>
 <div>${Object.keys(SN).map(s=>`<div class="card"><h3 style="color:${SC[s]}">${SN[s]} today</h3><div class="big" id="ts-${s}"></div><div class="bar"><i id="tb-${s}" style="background:${SC[s]}"></i></div><p class="mu" id="tl-${s}"></p>
-<label class="mu">Daily goal (min) <input class="in" type="number" min="0" max="1440" style="width:90px" value="${D.goals[s]}" data-a="goal" data-s="${s}"></label> <button class="btn p" id="tg-${s}" data-a="sgo" data-s="${s}">Start</button></div>`).join("")}</div></div>`;paintTimers()}
+<label class="mu">Daily goal (min) <input class="in" type="number" min="0" max="1440" style="width:90px" value="${D.goals[s]}" data-a="goal" data-s="${s}"></label> <button class="btn p" id="tg-${s}" data-a="sgo" data-s="${s}">Start</button></div>`).join("")}</div></div>${manualCard()}`;paintTimers()}
+/* manual hours entry */
+function manualCard(){D.manual=D.manual||[];
+  const rec=[...D.manual].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:b.id-a.id).slice(0,10);
+  return `<div class="card"><h3>✍️ Add study hours manually</h3>
+<p class="mu">Forgot to start the timer? Type the time directly. It counts in Analytics, Streaks and daily goals just like timer time.</p>
+<div class="frm" style="justify-content:flex-start;align-items:flex-end">
+<label class="mu" style="margin:0">Date<br><input class="in" type="date" id="mn-d" value="${dk()}" max="${dk()}"></label>
+<label class="mu" style="margin:0">Subject<br><select class="in" id="mn-s">${Object.keys(SN).map(k=>`<option value="${k}">${SN[k]}</option>`).join("")}</select></label>
+<label class="mu" style="margin:0">Hours<br><input class="in" type="number" id="mn-h" min="0" max="24" step="1" placeholder="0" style="width:72px"></label>
+<label class="mu" style="margin:0">Minutes<br><input class="in" type="number" id="mn-m" min="0" max="59" step="1" placeholder="0" style="width:72px"></label>
+<button class="btn p" data-a="madd">Add time</button></div>
+<p class="mu" id="mn-msg" role="status"></p>
+${rec.length?`<h3 style="font-size:14px;margin:12px 0 0">Recent manual entries</h3>`+rec.map(x=>`<div class="hb"><span style="flex:1"><b style="color:${SC[x.s]}">${SN[x.s]}</b> · ${fmtD(x.date)}</span><b>${hrm(x.sec)}</b><button class="btn" data-a="mdel" data-id="${x.id}" aria-label="Delete entry">✕</button></div>`).join(""):""}</div>`}
 /* streaks + habits */
 function renderStreaks(){const st=streaks();let tot=0;for(let i=0;i<400;i++)if(studied(back(i)))tot++;
   const t=new Date(),start=new Date(t.getFullYear(),t.getMonth(),t.getDate()-114);let cells="";for(let i=0;i<start.getDay();i++)cells+='<i style="visibility:hidden"></i>';
@@ -575,6 +588,14 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-a],[data-v
   if(b.dataset.view){showView(b.dataset.view);return}
   const a=b.dataset.a,id=+b.dataset.id,s=b.dataset.s,v=b.dataset.v,kk=b.dataset.k;
   if(a==="sgo")togS(s);else if(a==="pgo")togP();
+  else if(a==="madd"){const d=$("mn-d").value,sb=$("mn-s").value,h=Math.max(0,Math.floor(+$("mn-h").value||0)),m=Math.max(0,Math.floor(+$("mn-m").value||0)),sec=(h*60+m)*60,msg=$("mn-msg");
+    if(!d||d>dk()){msg.textContent="Pick today or an earlier date.";return}
+    if(sec<=0){msg.textContent="Enter hours and/or minutes first.";return}
+    if(sec>86400){msg.textContent="One entry can't be more than 24 hours.";return}
+    const x=D.log[d]=D.log[d]||{p:0,c:0,m:0};x[sb]=(x[sb]||0)+sec;
+    D.manual=D.manual||[];D.manual.push({id:Date.now(),date:d,s:sb,sec});save();renderTimers();
+    $("mn-msg").textContent="Added "+hrm(sec)+" to "+SN[sb]+" ("+fmtD(d)+") ✓. Press Save progress to keep it."}
+  else if(a==="mdel"){const e=(D.manual||[]).find(x=>x.id===id);if(e){const x=D.log[e.date];if(x)x[e.s]=Math.max(0,(x[e.s]||0)-e.sec);D.manual=D.manual.filter(x=>x.id!==id);save();renderTimers()}}
   else if(a==="prst"){PM.left=DUR[PM.mode];if(T&&T.k==="p")T=null;paintTimers()}
   else if(a==="pmode"){PM.mode=b.dataset.m;PM.left=DUR[PM.mode];if(T&&T.k==="p")T=null;paintTimers()}
   else if(a==="hdel"){D.habits=D.habits.filter(h=>h.id!==id);save();renderStreaks()}
