@@ -271,7 +271,7 @@ function commit(){const b=document.getElementById("sv");let ok=true;try{localSto
   if(ok)dirty=false;syncBar();b.textContent=ok?"Saved ✓":"Could not save";setTimeout(()=>{b.textContent="Save progress"},1600)}
 addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
 const get=id=>S[id]||(S[id]={t:0,m:0,a:0,b:0,r:0,f:0,c:0});
-const score=id=>{const s=S[id];return s?(s.t+s.m+s.a+s.b+s.r/3)/5:0};
+const score=id=>{const s=S[id];return s?(s.t+s.m+s.a+s.b)/4:0};
 const ids=(sj)=>sj.m.flatMap((g,gi)=>g[1].map((_,i)=>sj.k+gi+"_"+i));
 const pct=list=>list.length?Math.round(list.reduce((a,id)=>a+score(id),0)/list.length*100):0;
 function dots(id,f,v,conf){let h='<span class="dots'+(conf?' conf':'')+'">';for(let n=1;n<=3;n++)h+=`<button class="dot${v>=n?' on c'+v:''}" data-id="${id}" data-f="${f}" data-v="${n}" aria-label="${f} level ${n}" aria-pressed="${v>=n}"></button>`;return h+'</span>'}
