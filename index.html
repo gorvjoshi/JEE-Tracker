@@ -213,7 +213,7 @@ html{scroll-behavior:auto}
 <div class="dn" id="dn" aria-live="polite">0</div>
 <div class="dl" id="dl">DAYS LEFT</div>
 <div class="hr"></div>
-<div class="hs">Till JEE Main — Jan 22, 2027</div>
+<div class="hs">Till JEE Main — Jan 20, 2027</div>
 </div>
 <div class="cue" id="cue">Scroll to open your tracker</div>
 </div></section>
@@ -309,7 +309,7 @@ document.addEventListener("change",e=>{
   const nb=document.querySelector(`.cb[data-id="${t.dataset.id}"][data-f="${t.dataset.f}"]`);if(nb)nb.focus();
 });
 
-const EXAM=new Date(2027,0,22),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const EXAM=new Date(2027,0,20),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const dn=document.getElementById("dn"),dl=document.getElementById("dl");
 const daysLeft=()=>{const n=new Date();return Math.round((EXAM-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)};
 function updateDays(first){
@@ -433,7 +433,7 @@ function renderTodo(){
 <div class="frm" style="justify-content:flex-start;margin:0 0 6px"><input class="in" id="todo-t" placeholder="Add a task for ${v===t?"today":fmtD(v)}…" style="flex:1;min-width:0" maxlength="200"><button class="btn p" data-a="tadd">Add</button></div>
 ${rows||'<p class="mu">Nothing planned for this day. Add a task above ✅</p>'}</div>`}
 /* calendar */
-const EV={i:["Important","var(--low)"],t:["Test / exam","var(--acc)"],d:["Deadline","var(--mid)"],o:["Other","var(--ok)"]},FIXED={"2027-01-22":"🎯 JEE Main 2027 begins"};
+const EV={i:["Important","var(--low)"],t:["Test / exam","var(--acc)"],d:["Deadline","var(--mid)"],o:["Other","var(--ok)"]},FIXED={"2027-01-20":"🎯 JEE Main 2027 begins"};
 const _n=new Date();let CM={y:_n.getFullYear(),m:_n.getMonth()},CS=dk(),EK="i";
 function dayItems(k){const o=[];if(FIXED[k])o.push({t:FIXED[k],c:"var(--acc2)",src:"fixed"});
   (D.events[k]||[]).forEach(e=>{const v=EV[e.k]||EV.o;o.push({id:e.id,t:e.t,c:v[1],kn:v[0],src:"ev"})});
